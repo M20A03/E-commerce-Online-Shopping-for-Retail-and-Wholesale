@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useReveal } from '../hooks/useReveal';
+import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
 import './ProductCard.css';
 
 function ProductCard({ product, delay = 0, onQuickView }) {
@@ -76,14 +77,11 @@ function ProductCard({ product, delay = 0, onQuickView }) {
           <span className={`product-label ${product.badgeType || 'sale'}`}>{product.badge}</span>
         )}
         <img
-          src={product.image || '/images/products/bundle.jpg'}
+          src={optimizeImageUrl(product.image, 380)}
           alt={product.name}
           loading="lazy"
           decoding="async"
-          onError={(e) => {
-            e.currentTarget.onerror = null;
-            e.currentTarget.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" rx="12" fill="%231E293B"/><path d="M110 130L150 110L190 130V175L150 195L110 175V130Z" stroke="%23F97316" stroke-width="3" fill="none"/><path d="M150 110V195" stroke="%23F97316" stroke-width="2"/><text x="150" y="230" fill="%2394A3B8" font-size="13" font-family="sans-serif" text-anchor="middle" font-weight="600">Roshan Enterprises</text></svg>';
-          }}
+          onError={(e) => handleImageError(e, '/products/t1.jpg')}
         />
         <button
           type="button"

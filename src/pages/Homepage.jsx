@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import useProducts from '../hooks/useProducts';
 import SEO from '../components/SEO';
+import { optimizeImageUrl, handleImageError, FALLBACK_PRODUCT_IMAGE } from '../utils/imageOptimizer';
 import './Homepage.css';
 
 const slides = [
@@ -10,19 +11,22 @@ const slides = [
     title: 'Premium Mustard & Refined Oils',
     text: '100% pure double-refined cooking oils and kachi ghani mustard oil for healthy, authentic everyday meals.',
     metric: 'Guaranteed Purity & Quality',
-    image: '/images/products/serum.jpg',
+    image: 'https://res.cloudinary.com/dbtilvzbi/image/upload/v1778042502/Fortune_1Litre_Palm_Pouch_mb49mb.jpg',
+    fallback: '/products/o1.jpg',
   },
   {
     title: 'Authentic Assam & Darjeeling Teas',
     text: 'Handpicked fresh tea leaves with rich aroma and robust flavor, sourced directly from certified tea estates.',
     metric: 'Fresh Batch Guarantee',
-    image: '/images/products/packaging.jpg',
+    image: 'https://res.cloudinary.com/dbtilvzbi/image/upload/v1778042491/Elachi_Tea_1Kg_Box_irolbo.jpg',
+    fallback: '/products/t1.jpg',
   },
   {
     title: 'Household & Cleaning Supplies',
     text: 'Top-grade laundry detergents, dishwashing bars, and hygiene essentials available at direct wholesale rates.',
     metric: 'Wholesale Bulk Savings',
-    image: '/images/products/bundle.jpg',
+    image: 'https://res.cloudinary.com/dbtilvzbi/image/upload/v1778042482/Doctor_5Kg_Detergent_bvdxc8.jpg',
+    fallback: '/products/d2.jpg',
   },
 ];
 
@@ -372,7 +376,13 @@ export default function Home() {
           aria-label={`${active + 1} of ${slides.length}`}
           aria-live={isShowcasePaused ? 'polite' : 'off'}
         >
-          <img src={currentSlide.image} alt={currentSlide.title} />
+          <img
+            src={optimizeImageUrl(currentSlide.image, 800)}
+            alt={currentSlide.title}
+            loading="eager"
+            decoding="async"
+            onError={(e) => handleImageError(e, currentSlide.fallback)}
+          />
           <div className="dhv2-carousel-copy">
             <h3>{currentSlide.title}</h3>
             <p>{currentSlide.text}</p>
@@ -428,7 +438,13 @@ export default function Home() {
         <div className="dhv2-product-track">
           {visibleCarouselProducts.map((product) => (
             <Link key={product.id} to={`/categories?cat=${product.category || 'all'}`} className="dhv2-product-slide">
-              <img src={product.image} alt={product.name} loading="lazy" />
+              <img
+                src={optimizeImageUrl(product.image, 320)}
+                alt={product.name}
+                loading="lazy"
+                decoding="async"
+                onError={(e) => handleImageError(e, '/products/t1.jpg')}
+              />
               <div>
                 <h4>{product.name}</h4>
                 <p>{product.brand || 'Roshan Enterprises'}</p>
@@ -467,7 +483,13 @@ export default function Home() {
           <div className="dhv2-product-track">
             {recentlyViewedProducts.map((product) => (
               <Link key={product.id} to={`/categories?cat=${product.category || 'all'}`} className="dhv2-product-slide">
-                <img src={product.image} alt={product.name} loading="lazy" />
+                <img
+                  src={optimizeImageUrl(product.image, 320)}
+                  alt={product.name}
+                  loading="lazy"
+                  decoding="async"
+                  onError={(e) => handleImageError(e, '/products/t1.jpg')}
+                />
                 <div>
                   <h4>{product.name}</h4>
                   <p>{product.brand || 'Roshan Enterprises'}</p>

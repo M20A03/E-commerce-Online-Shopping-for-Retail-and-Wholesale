@@ -4,6 +4,7 @@ import { X, ShoppingCart, Heart, ShieldCheck, Truck, RefreshCw, Star } from 'luc
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { evaluateDeliveryZone } from '../router/guards';
+import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
 import './ProductModal.css';
 
 export function ProductModal({ product, isOpen, onClose }) {
@@ -72,9 +73,12 @@ export function ProductModal({ product, isOpen, onClose }) {
               {/* Product Image Column */}
               <div className="product-modal-media">
                 <img
-                  src={product.image || '/images/products/bundle.jpg'}
+                  src={optimizeImageUrl(product.image, 600)}
                   alt={product.name}
                   className="product-modal-image"
+                  loading="lazy"
+                  decoding="async"
+                  onError={(e) => handleImageError(e, '/products/t1.jpg')}
                 />
                 {product.badge && (
                   <span className="product-modal-badge">{product.badge}</span>

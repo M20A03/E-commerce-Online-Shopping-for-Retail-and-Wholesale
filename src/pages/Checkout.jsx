@@ -9,6 +9,7 @@ import { db, appCheck, auth } from '../firebase-config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { Smartphone, HandCoins, CheckCircle } from 'lucide-react';
 import UPIPayment from '../components/UPIPayment';
+import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
 import './Checkout.css';
 
 const ORDER_API_BASE_URL = import.meta.env.VITE_ORDER_API_URL || 'http://localhost:8787';
@@ -349,7 +350,14 @@ const Checkout = () => {
             <div className="summary-items">
               {cart.map((item) => (
                 <div key={item.id} className="summary-item">
-                  <img src={item.image || '/images/products/bundle.jpg'} alt={item.name} className="summary-item-img" loading="lazy" />
+                  <img
+                    src={optimizeImageUrl(item.image, 160)}
+                    alt={item.name}
+                    className="summary-item-img"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => handleImageError(e, '/products/t1.jpg')}
+                  />
                   <div className="summary-item-info">
                     <h4 className="summary-item-name">{item.name}</h4>
                     <span className="summary-item-qty">Qty: {item.quantity}</span>

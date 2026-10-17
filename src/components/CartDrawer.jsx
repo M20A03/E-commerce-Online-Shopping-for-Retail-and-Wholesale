@@ -6,6 +6,7 @@ import { ShoppingBag, Truck, X, Trash2, Plus, Minus, ArrowRight } from 'lucide-r
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
 import './CartDrawer.css';
 
 const MotionDiv = motion.div;
@@ -102,11 +103,12 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 transition={{ delay: index * 0.04 + 0.05, duration: 0.25 }}
               >
                 <img
-                  src={Array.isArray(item.images) && item.images.length ? item.images[0] : (item.image || '/images/products/bundle.jpg')}
+                  src={optimizeImageUrl(Array.isArray(item.images) && item.images.length ? item.images[0] : item.image, 160)}
                   alt={item.name}
                   className="cart-drawer__thumb"
                   loading="lazy"
                   decoding="async"
+                  onError={(e) => handleImageError(e, '/products/t1.jpg')}
                 />
                 <div className="cart-drawer__item-body">
                   <div className="cart-drawer__item-top">

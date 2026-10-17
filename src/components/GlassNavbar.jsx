@@ -184,7 +184,13 @@ const GlassNavbar = ({ theme, toggleTheme, onCartClick, cartButtonRef }) => {
                 <div className="glass-navbar__auth-panel">
                   <button type="button" className="glass-button glass-button--soft" onClick={() => navigate('/account')}>
                     {user.photoURL ? (
-                      <img src={user.photoURL} alt={user.displayName || 'User'} className="glass-navbar__avatar-img" referrerPolicy="no-referrer" />
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName || 'User'}
+                        className="glass-navbar__avatar-img"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      />
                     ) : (
                       <span className="glass-navbar__avatar"><User size={16} /></span>
                     )}

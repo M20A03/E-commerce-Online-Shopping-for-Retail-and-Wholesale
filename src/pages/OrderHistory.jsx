@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../firebase-config';
 import { Package, Calendar, CreditCard, Truck, CircleCheck, PackageCheck, MapPinned } from 'lucide-react';
+import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
 import './OrderHistory.css';
 
 const OrderHistory = () => {
@@ -184,7 +185,14 @@ const OrderHistory = () => {
                             <div className="order-items-preview">
                                 {order.items.slice(0, 3).map((item, i) => (
                                     <div key={i} className="order-preview-img-wrapper" title={`${item.name} x${item.quantity}`}>
-                                        <img src={item.image} alt={item.name} className="order-preview-img" />
+                                        <img
+                                            src={optimizeImageUrl(item.image, 120)}
+                                            alt={item.name}
+                                            className="order-preview-img"
+                                            loading="lazy"
+                                            decoding="async"
+                                            onError={(e) => handleImageError(e, '/products/t1.jpg')}
+                                        />
                                         <span className="order-preview-qty">{item.quantity}</span>
                                     </div>
                                 ))}
@@ -238,7 +246,14 @@ const OrderHistory = () => {
                                     <div className="tracked-products">
                                         {order.items.map((item, productIndex) => (
                                             <div key={`${item.id}-${productIndex}`} className="tracked-product">
-                                                <img src={item.image} alt={item.name} className="tracked-product__img" />
+                                                <img
+                                                    src={optimizeImageUrl(item.image, 160)}
+                                                    alt={item.name}
+                                                    className="tracked-product__img"
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    onError={(e) => handleImageError(e, '/products/t1.jpg')}
+                                                />
                                                 <div className="tracked-product__meta">
                                                     <p className="tracked-product__name">{item.name}</p>
                                                     <p className="tracked-product__qty">Qty: {item.quantity}</p>

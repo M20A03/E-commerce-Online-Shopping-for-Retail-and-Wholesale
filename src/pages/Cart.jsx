@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, ArrowRight, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
 import './Cart.css';
 
 const Cart = () => {
@@ -50,7 +51,14 @@ const Cart = () => {
               {cart.map((item) => (
                 <div key={item.id} className="cart-item">
                   <div className="col-product flex gap-3 items-center">
-                    <img src={item.image || '/images/products/bundle.jpg'} alt={item.name} className="cart-item-img" />
+                    <img
+                      src={optimizeImageUrl(item.image, 160)}
+                      alt={item.name}
+                      className="cart-item-img"
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => handleImageError(e, '/products/t1.jpg')}
+                    />
                     <div>
                       <h4 className="cart-item-name">
                         <Link to={`/categories?cat=${item.category || 'all'}`}>{item.name}</Link>

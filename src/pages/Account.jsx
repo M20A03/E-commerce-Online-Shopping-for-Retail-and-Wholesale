@@ -143,7 +143,11 @@ const Account = () => {
                     <div className="card" style={{ padding: '2rem', height: 'fit-content' }}>
                         <div className="flex-col items-center justify-center text-center mb-6">
                             {user?.photoURL ? (
-                                <img src={user.photoURL} alt={profileTitle} referrerPolicy="no-referrer"
+                                <img
+                                    src={user.photoURL}
+                                    alt={profileTitle}
+                                    referrerPolicy="no-referrer"
+                                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
                                     style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', marginBottom: '1rem', border: '2px solid var(--border-color)' }}
                                 />
                             ) : (
