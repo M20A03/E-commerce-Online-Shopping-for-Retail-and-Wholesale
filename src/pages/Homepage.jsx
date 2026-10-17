@@ -213,7 +213,7 @@ export default function Home() {
           '@context': 'https://schema.org',
           '@type': 'GroceryStore',
           name: 'Roshan Enterprises',
-          image: 'https://e-commerce-roshan-enterprises-dhn.web.app/logo.png',
+          image: 'https://e-commerce-roshan-enterprises-dhn.web.app/logo.webp',
           url: 'https://e-commerce-roshan-enterprises-dhn.web.app/',
           telephone: '+917004634675',
           priceRange: '₹₹',

@@ -16,6 +16,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import CartDrawer from './components/CartDrawer';
 import ToastContainer from './components/ToastContainer';
 import CookieConsent from './components/CookieConsent';
+import BrandLoader from './components/BrandLoader';
 
 // Global Scroll Observer for smooth reveals
 function GlobalScrollObserver() {
@@ -137,12 +138,7 @@ const AppContent = () => {
 
       <main className="main-content">
         <Suspense
-          fallback={
-            <div className="container section flex flex-col items-center justify-center" style={{ minHeight: '50vh' }}>
-              <div className="spinner" />
-              <p className="text-muted mt-4 font-medium">Loading Roshan Enterprises...</p>
-            </div>
-          }
+          fallback={<BrandLoader message="Loading Roshan Enterprises..." />}
         >
           <Routes location={location}>
             <Route
@@ -156,14 +152,7 @@ const AppContent = () => {
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/account" element={<Account />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route
-              path="/orders"
-              element={
-                <ProtectedRoute>
-                  <OrderHistory />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/orders" element={<OrderHistory />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/faq" element={<FAQ />} />

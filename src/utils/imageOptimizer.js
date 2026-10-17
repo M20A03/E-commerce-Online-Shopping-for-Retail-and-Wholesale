@@ -48,15 +48,21 @@ export function optimizeImageUrl(url, width = 500) {
     return FALLBACK_PRODUCT_IMAGE;
   }
 
-  // Optimize Cloudinary URLs
+  // Optimize Cloudinary URLs with modern compression & dimension caps
   if (trimmed.includes('res.cloudinary.com') && trimmed.includes('/image/upload/')) {
-    // If transformation flags are already present, leave intact or upgrade
     if (trimmed.includes('/image/upload/f_auto') || trimmed.includes('/image/upload/q_auto')) {
       return trimmed;
     }
-    // Inject responsive auto-format, quality, and width bounds
     const transformFlags = `f_auto,q_auto,w_${width},c_limit`;
     return trimmed.replace('/image/upload/', `/image/upload/${transformFlags}/`);
+  }
+
+  // For local product images, serve modern ultra-compressed .webp
+  if (trimmed.startsWith('/products/') && trimmed.endsWith('.jpg')) {
+    return trimmed.replace(/\.jpg$/, '.webp');
+  }
+  if (trimmed.startsWith('/images/products/') && trimmed.endsWith('.jpg')) {
+    return trimmed.replace(/\.jpg$/, '.webp');
   }
 
   return trimmed;
@@ -64,15 +70,24 @@ export function optimizeImageUrl(url, width = 500) {
 
 /**
  * Robust image error handler to prevent broken image icons and infinite error loops.
+ * Falls back from WebP to original JPEG if needed, then to secondary fallback, then SVG.
  *
  * @param {React.SyntheticEvent<HTMLImageElement, Event>} event - Image error event
  * @param {string} [secondaryFallback] - Optional secondary fallback image URL
  */
 export function handleImageError(event, secondaryFallback) {
   const target = event.currentTarget;
+  const currentSrc = target.src || '';
+
+  // If webp failed, retry with jpeg first
+  if (currentSrc.endsWith('.webp')) {
+    target.src = currentSrc.replace(/\.webp$/, '.jpg');
+    return;
+  }
+
   target.onerror = null; // Prevent recursion
 
-  if (secondaryFallback && target.src !== secondaryFallback) {
+  if (secondaryFallback && currentSrc !== secondaryFallback) {
     target.src = secondaryFallback;
   } else {
     target.src = FALLBACK_PRODUCT_IMAGE;

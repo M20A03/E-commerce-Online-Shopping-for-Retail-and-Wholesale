@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/webp" href="/logo.webp" />
+    <link rel="alternate icon" type="image/png" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Roshan Enterprises - Premium retail & wholesale e-commerce in Dhanbad, Jharkhand. High quality cooking oils, authentic tea, and household essentials." />
     <meta name="keywords" content="Roshan Enterprises, online grocery Dhanbad, buy cooking oil online, premium tea Dhanbad, wholesale household essentials Jharkhand" />
     <meta name="author" content="Roshan Enterprises" />
@@ -31,18 +32,111 @@
     <meta property="og:url" content="https://e-commerce-roshan-enterprises-dhn.web.app/" />
     <meta property="og:title" content="Roshan Enterprises | Modern Retail & Wholesale E-commerce" />
     <meta property="og:description" content="Shop cooking oils, tea, and household essentials with reliable quality and sophisticated doorstep delivery in Dhanbad." />
-    <meta property="og:image" content="https://e-commerce-roshan-enterprises-dhn.web.app/hero_banner.png" />
+    <meta property="og:image" content="https://e-commerce-roshan-enterprises-dhn.web.app/hero_banner.webp" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://e-commerce-roshan-enterprises-dhn.web.app/" />
     <meta property="twitter:title" content="Roshan Enterprises | Modern Retail & Wholesale E-commerce" />
     <meta property="twitter:description" content="Shop cooking oils, tea, and household essentials with reliable quality and sophisticated doorstep delivery in Dhanbad." />
-    <meta property="twitter:image" content="https://e-commerce-roshan-enterprises-dhn.web.app/hero_banner.png" />
+    <meta property="twitter:image" content="https://e-commerce-roshan-enterprises-dhn.web.app/hero_banner.webp" />
 
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="#1a120c" />
     <meta name="color-scheme" content="light dark" />
     <title>Roshan Enterprises | Online Shopping Dhanbad | Retail & Wholesale</title>
+
+    <style>
+      /* Standalone Zero-Lag Preloader */
+      .re-splash-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at 50% 35%, #24160d 0%, #0d0805 100%);
+        color: #f7ede2;
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        overflow: hidden;
+      }
+      .re-splash-glow {
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(212, 163, 115, 0.28) 0%, rgba(212, 163, 115, 0) 70%);
+        filter: blur(50px);
+        animation: rePulse 3s ease-in-out infinite alternate;
+      }
+      .re-splash-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 2rem;
+        animation: reFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      .re-splash-emblem {
+        width: 86px;
+        height: 86px;
+        margin-bottom: 1.25rem;
+        filter: drop-shadow(0 6px 18px rgba(212, 163, 115, 0.4));
+        animation: reEmblemFloat 4s ease-in-out infinite;
+      }
+      .re-splash-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        background: linear-gradient(135deg, #fcead2 0%, #d4a373 50%, #b28b6e 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.25rem;
+      }
+      .re-splash-subtitle {
+        font-size: 0.72rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: #a89484;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+      }
+      .re-splash-progress {
+        width: 140px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        overflow: hidden;
+        position: relative;
+      }
+      .re-splash-progress-fill {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 45%;
+        background: linear-gradient(90deg, transparent, #d4a373, #fcead2, transparent);
+        border-radius: 999px;
+        animation: reShimmer 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      @keyframes rePulse {
+        0% { transform: scale(0.9); opacity: 0.5; }
+        100% { transform: scale(1.2); opacity: 0.9; }
+      }
+      @keyframes reEmblemFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+      }
+      @keyframes reFadeIn {
+        from { opacity: 0; transform: translateY(14px) scale(0.96); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      @keyframes reShimmer {
+        0% { left: -50%; }
+        100% { left: 120%; }
+      }
+    </style>
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -50,7 +144,7 @@
       "@context": "https://schema.org",
       "@type": "Store",
       "name": "Roshan Enterprises",
-      "image": "https://e-commerce-roshan-enterprises-dhn.web.app/logo.png",
+      "image": "https://e-commerce-roshan-enterprises-dhn.web.app/logo.webp",
       "@id": "https://e-commerce-roshan-enterprises-dhn.web.app/",
       "url": "https://e-commerce-roshan-enterprises-dhn.web.app/",
       "telephone": "+917004634675",
@@ -79,7 +173,35 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="re-splash-screen" id="re-initial-splash" aria-label="Loading Roshan Enterprises">
+        <div class="re-splash-glow" aria-hidden="true"></div>
+        <div class="re-splash-card">
+          <svg class="re-splash-emblem" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="splashGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#fcead2" />
+                <stop offset="50%" stopColor="#d4a373" />
+                <stop offset="100%" stopColor="#8d5b34" />
+              </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="45" stroke="url(#splashGold)" stroke-width="2.5" fill="none" />
+            <circle cx="50" cy="50" r="40" fill="#1b120c" />
+            <circle cx="50" cy="50" r="38" stroke="url(#splashGold)" stroke-width="1" stroke-dasharray="3 3" opacity="0.6" />
+            <path d="M38 28 H 52 C 60 28, 66 32, 66 40 C 66 47, 60 51, 52 51 H 45 V 72 H 38 V 28 Z M 45 34 V 45 H 52 C 56 45, 59 43, 59 39.5 C 59 36, 56 34, 52 34 H 45 Z" fill="url(#splashGold)" />
+            <path d="M 50 49 L 65 72 H 57 L 44 50 Z" fill="url(#splashGold)" />
+            <circle cx="50" cy="18" r="2.5" fill="url(#splashGold)" />
+            <circle cx="42" cy="20" r="1.8" fill="url(#splashGold)" />
+            <circle cx="58" cy="20" r="1.8" fill="url(#splashGold)" />
+          </svg>
+          <div class="re-splash-title">ROSHAN</div>
+          <div class="re-splash-subtitle">ENTERPRISES</div>
+          <div class="re-splash-progress">
+            <div class="re-splash-progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

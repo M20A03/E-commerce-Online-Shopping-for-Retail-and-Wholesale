@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 const SITE_NAME = 'Roshan Enterprises';
 const BASE_URL = 'https://e-commerce-roshan-enterprises-dhn.web.app';
-const DEFAULT_IMAGE = `${BASE_URL}/hero_banner.png`;
+const DEFAULT_IMAGE = `${BASE_URL}/hero_banner.webp`;
 
 export default function SEO({
   title = 'Roshan Enterprises | Online Shopping Dhanbad | Retail & Wholesale',
