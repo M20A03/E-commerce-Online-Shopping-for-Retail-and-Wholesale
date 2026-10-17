@@ -2,7 +2,7 @@
 import { initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCSqLi9Iu3CeYOfNH7yPCX32LTyXUR-MBQ",
@@ -33,5 +33,12 @@ try {
 export const appCheck = appCheckInstance;
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+// Enforce browser local persistence to eliminate session drops on page reload
+if (typeof window !== 'undefined') {
+  setPersistence(auth, browserLocalPersistence).catch((err) => {
+    console.warn('Failed to set browser local persistence:', err);
+  });
+}
 
 export default app;
