@@ -33,7 +33,12 @@ function mapStatusToStep(status = '') {
 
 const TrackOrder = () => {
   const [searchParams] = useSearchParams();
-  const urlId = searchParams.get('id') || '';
+  const urlId =
+    searchParams.get('orderId') ||
+    searchParams.get('id') ||
+    searchParams.get('order_id') ||
+    searchParams.get('tracking') ||
+    '';
   const [trackingCode, setTrackingCode] = useState(urlId);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -140,14 +145,28 @@ const TrackOrder = () => {
 
     // 3. Simulated fallback for generic courier tracking codes or demo tracking numbers
     if (cleanCode.length >= 6) {
-      const bucket = cleanCode.length % 4;
-      const statusMap = [
-        { status: 'Out for Delivery', location: 'Roshan Enterprises Dhanbad Hub', eta: 'Arriving today by 7:30 PM', step: 3, desc: 'Package is out with our local delivery agent.' },
-        { status: 'In Transit', location: 'Regional Sorting Center, Bokaro/Dhanbad', eta: 'Arriving tomorrow', step: 2, desc: 'Your shipment is moving through our logistics hub on schedule.' },
-        { status: 'Packed', location: 'Roshan Fulfillment Warehouse', eta: 'Dispatching today', step: 1, desc: 'Quality checked, sealed, and waiting for courier dispatch.' },
-        { status: 'Delivered', location: 'Delivered to Destination', eta: 'Delivered', step: 4, desc: 'Delivered successfully. Thank you for shopping with us!' }
-      ];
-      const selected = statusMap[bucket];
+      let selected;
+      if (cleanCode.includes('DELIV')) {
+        selected = { status: 'Delivered', location: 'Delivered to Destination, Dhanbad', eta: 'Delivered Today', step: 4, desc: 'Package delivered successfully. Thank you for shopping with Roshan Enterprises!' };
+      } else if (cleanCode.includes('OUT')) {
+        selected = { status: 'Out for Delivery', location: 'Roshan Express Courier (Local Van)', eta: 'Arriving today by 6:00 PM', step: 3, desc: 'Package is out with your delivery partner for final handover.' };
+      } else if (cleanCode.includes('TRANS')) {
+        selected = { status: 'In Transit', location: 'Regional Sorting Facility (Bokaro / Dhanbad Hub)', eta: 'Expected tomorrow', step: 2, desc: 'Your shipment is moving through the regional transit network.' };
+      } else if (cleanCode.includes('PACK')) {
+        selected = { status: 'Packed', location: 'Roshan Fulfillment Center, Dhanbad', eta: 'Dispatching in 4 hours', step: 1, desc: 'Items quality checked, packed in secure tamper-proof box, and scheduled for pickup.' };
+      } else if (cleanCode.includes('ORDER')) {
+        selected = { status: 'Order Placed', location: 'Roshan Enterprises Central Order Desk', eta: 'Processing for dispatch', step: 0, desc: 'Order received and confirmed. Inventory reserved at Dhanbad warehouse.' };
+      } else {
+        const bucket = cleanCode.length % 5;
+        const statusMap = [
+          { status: 'Order Placed', location: 'Roshan Central Order Desk', eta: 'Processing', step: 0, desc: 'Order confirmed and inventory locked.' },
+          { status: 'Packed', location: 'Roshan Fulfillment Warehouse', eta: 'Dispatching today', step: 1, desc: 'Quality checked, sealed, and waiting for courier dispatch.' },
+          { status: 'In Transit', location: 'Regional Sorting Center, Bokaro/Dhanbad', eta: 'Arriving tomorrow', step: 2, desc: 'Your shipment is moving through our logistics hub on schedule.' },
+          { status: 'Out for Delivery', location: 'Roshan Enterprises Dhanbad Hub', eta: 'Arriving today by 7:30 PM', step: 3, desc: 'Package is out with our local delivery agent.' },
+          { status: 'Delivered', location: 'Delivered to Destination', eta: 'Delivered', step: 4, desc: 'Delivered successfully. Thank you for shopping with us!' }
+        ];
+        selected = statusMap[bucket];
+      }
 
       setResult({
         isReal: false,
@@ -219,7 +238,41 @@ const TrackOrder = () => {
                 {loading ? 'Searching...' : 'Track Order'}
               </button>
             </div>
-            <p className="p2-track-help">
+            
+            {/* Quick Demo Sample Order Chips */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: '10px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Try Live Sample:</span>
+              <button
+                type="button"
+                onClick={() => { setTrackingCode('RE-DELIV-9042'); performLookup('RE-DELIV-9042'); }}
+                style={{ padding: '3px 10px', borderRadius: '14px', fontSize: '0.75rem', cursor: 'pointer', background: 'rgba(34, 197, 94, 0.12)', border: '1px solid #22c55e', color: '#16a34a', fontWeight: 600 }}
+              >
+                Delivered (RE-DELIV-9042)
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTrackingCode('RE-OUT-7821'); performLookup('RE-OUT-7821'); }}
+                style={{ padding: '3px 10px', borderRadius: '14px', fontSize: '0.75rem', cursor: 'pointer', background: 'rgba(249, 115, 22, 0.12)', border: '1px solid #f97316', color: '#ea580c', fontWeight: 600 }}
+              >
+                Out for Delivery (RE-OUT-7821)
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTrackingCode('RE-TRANS-5112'); performLookup('RE-TRANS-5112'); }}
+                style={{ padding: '3px 10px', borderRadius: '14px', fontSize: '0.75rem', cursor: 'pointer', background: 'rgba(14, 165, 233, 0.12)', border: '1px solid #0ea5e9', color: '#0284c7', fontWeight: 600 }}
+              >
+                In Transit (RE-TRANS-5112)
+              </button>
+              <button
+                type="button"
+                onClick={() => { setTrackingCode('RE-PACK-1048'); performLookup('RE-PACK-1048'); }}
+                style={{ padding: '3px 10px', borderRadius: '14px', fontSize: '0.75rem', cursor: 'pointer', background: 'rgba(168, 85, 247, 0.12)', border: '1px solid #a855f7', color: '#9333ea', fontWeight: 600 }}
+              >
+                Packed (RE-PACK-1048)
+              </button>
+            </div>
+
+            <p className="p2-track-help" style={{ marginTop: '8px' }}>
               Tip: Your Order ID was shown at checkout and is saved in your <Link to="/orders" style={{ textDecoration: 'underline', color: 'var(--accent)' }}>Order History</Link>.
             </p>
           </form>

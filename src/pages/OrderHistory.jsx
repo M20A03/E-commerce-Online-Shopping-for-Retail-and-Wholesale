@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../firebase-config';
@@ -22,11 +22,25 @@ import './OrderHistory.css';
 const OrderHistory = () => {
   const { user, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
-  const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const [searchParams] = useSearchParams();
+  const urlOrderId = searchParams.get('orderId') || searchParams.get('id') || searchParams.get('order_id') || '';
+  const urlStatus = searchParams.get('status') || '';
+
+  const [expandedOrderId, setExpandedOrderId] = useState(urlOrderId || null);
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState(urlStatus ? urlStatus.toLowerCase() : 'all');
+  const [searchQuery, setSearchQuery] = useState(urlOrderId || '');
+
+  useEffect(() => {
+    if (urlOrderId) {
+      setSearchQuery(urlOrderId);
+      setExpandedOrderId(urlOrderId);
+    }
+    if (urlStatus) {
+      setStatusFilter(urlStatus.toLowerCase());
+    }
+  }, [urlOrderId, urlStatus]);
 
   // Load orders from LocalStorage immediately, and subscribe to Firestore if user logged in
   useEffect(() => {

@@ -1,6 +1,63 @@
-// IMPROVEMENT: Optimized CartContext with useCallback/useMemo and ToastContext integration
+// IMPROVEMENT: Optimized CartContext with Wholesale Tiered Pricing, useCallback/useMemo, and ToastContext integration
 import React, { createContext, useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { useToast } from './ToastContext';
+
+/**
+ * Calculates wholesale tiered pricing dynamically based on item quantity.
+ * Tiers:
+ *  - 10-49 units: 6% wholesale discount
+ *  - 50-99 units: 12% wholesale discount
+ *  - 100+ units: 20% bulk wholesale discount
+ */
+export const calculateTieredPrice = (basePrice, quantity) => {
+  const price = Number(basePrice) || 0;
+  const qty = Number(quantity) || 1;
+
+  if (qty >= 100) {
+    const discounted = price * 0.80;
+    return {
+      unitPrice: Number(discounted.toFixed(2)),
+      originalUnitPrice: price,
+      discountPercent: 20,
+      tierName: 'Tier 3 (100+ Mega Bulk)',
+      total: Number((discounted * qty).toFixed(2)),
+      savings: Number(((price - discounted) * qty).toFixed(2))
+    };
+  }
+
+  if (qty >= 50) {
+    const discounted = price * 0.88;
+    return {
+      unitPrice: Number(discounted.toFixed(2)),
+      originalUnitPrice: price,
+      discountPercent: 12,
+      tierName: 'Tier 2 (50+ Wholesale)',
+      total: Number((discounted * qty).toFixed(2)),
+      savings: Number(((price - discounted) * qty).toFixed(2))
+    };
+  }
+
+  if (qty >= 10) {
+    const discounted = price * 0.94;
+    return {
+      unitPrice: Number(discounted.toFixed(2)),
+      originalUnitPrice: price,
+      discountPercent: 6,
+      tierName: 'Tier 1 (10+ Wholesale)',
+      total: Number((discounted * qty).toFixed(2)),
+      savings: Number(((price - discounted) * qty).toFixed(2))
+    };
+  }
+
+  return {
+    unitPrice: price,
+    originalUnitPrice: price,
+    discountPercent: 0,
+    tierName: 'Retail',
+    total: Number((price * qty).toFixed(2)),
+    savings: 0
+  };
+};
 
 const CartContext = createContext();
 
@@ -67,9 +124,22 @@ export const CartProvider = ({ children }) => {
     setCart([]);
   }, []);
 
+  // Total cart calculation with wholesale tiered pricing dynamically applied
   const getCartTotal = useCallback(() => {
-    const total = cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
+    const total = cart.reduce((sum, item) => {
+      const { total: itemTotal } = calculateTieredPrice(item.price, item.quantity);
+      return sum + itemTotal;
+    }, 0);
     return Number(total.toFixed(2));
+  }, [cart]);
+
+  // Total savings from wholesale tiered discounts
+  const getWholesaleSavings = useCallback(() => {
+    const savings = cart.reduce((sum, item) => {
+      const { savings: itemSavings } = calculateTieredPrice(item.price, item.quantity);
+      return sum + itemSavings;
+    }, 0);
+    return Number(savings.toFixed(2));
   }, [cart]);
 
   const getCartCount = useCallback(() => {
@@ -83,8 +153,10 @@ export const CartProvider = ({ children }) => {
     updateQuantity,
     clearCart,
     getCartTotal,
-    getCartCount
-  }), [cart, addToCart, removeFromCart, updateQuantity, clearCart, getCartTotal, getCartCount]);
+    getWholesaleSavings,
+    getCartCount,
+    calculateTieredPrice
+  }), [cart, addToCart, removeFromCart, updateQuantity, clearCart, getCartTotal, getWholesaleSavings, getCartCount]);
 
   return (
     <CartContext.Provider value={value}>

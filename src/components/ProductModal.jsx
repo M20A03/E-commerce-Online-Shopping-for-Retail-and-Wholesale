@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Heart, ShieldCheck, Truck, RefreshCw, Star } from 'lucide-react';
-import { useCart } from '../context/CartContext';
+import { useCart, calculateTieredPrice } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { evaluateDeliveryZone } from '../router/guards';
 import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
@@ -39,8 +39,10 @@ export function ProductModal({ product, isOpen, onClose }) {
   const isWishlisted = isInWishlist(product.id);
   const ratingVal = Number(product.rating) || 5;
   const reviewsCount = Number(product.reviews) || 120;
-  const price = Number(product.price) || 0;
+  const basePrice = Number(product.price) || 0;
   const originalPrice = Number(product.originalPrice) || 0;
+  const tiered = calculateTieredPrice(basePrice, quantity);
+  const hasWholesaleDiscount = tiered.discountPercent > 0;
 
   return (
     <AnimatePresence>
@@ -104,15 +106,61 @@ export function ProductModal({ product, isOpen, onClose }) {
                 </div>
 
                 <div className="product-modal-pricing">
-                  <span className="product-modal-price-current">₹{price.toFixed(2)}</span>
-                  {originalPrice > price && (
+                  <span className="product-modal-price-current">₹{tiered.unitPrice.toFixed(2)}</span>
+                  {hasWholesaleDiscount ? (
+                    <span className="badge" style={{ backgroundColor: 'var(--brand-wholesale)', color: '#fff', fontSize: '0.78rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px' }}>
+                      {tiered.tierName} ({tiered.discountPercent}% OFF)
+                    </span>
+                  ) : originalPrice > basePrice ? (
                     <>
                       <span className="product-modal-price-original">₹{originalPrice.toFixed(2)}</span>
                       <span className="badge badge-success">
-                        Save {Math.round((1 - price / originalPrice) * 100)}%
+                        Save {Math.round((1 - basePrice / originalPrice) * 100)}%
                       </span>
                     </>
-                  )}
+                  ) : null}
+                </div>
+
+                {/* Wholesale Bulk Tier Quick Chips */}
+                <div style={{ margin: '0.6rem 0', padding: '0.6rem 0.8rem', background: 'rgba(249, 115, 22, 0.08)', border: '1px solid rgba(249, 115, 22, 0.25)', borderRadius: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--brand-wholesale)', letterSpacing: '0.5px' }}>
+                      Wholesale Bulk Savings Tiers
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                      Total: ₹{tiered.total.toFixed(2)}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(1)}
+                      style={{ padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', cursor: 'pointer', border: quantity < 10 ? '1px solid var(--brand-primary)' : '1px solid var(--border-default)', background: quantity < 10 ? 'var(--brand-primary-light)' : 'transparent', color: quantity < 10 ? 'var(--brand-primary)' : 'inherit' }}
+                    >
+                      Retail (1+)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(10)}
+                      style={{ padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', cursor: 'pointer', border: quantity >= 10 && quantity < 50 ? '1px solid var(--brand-wholesale)' : '1px solid var(--border-default)', background: quantity >= 10 && quantity < 50 ? 'rgba(249, 115, 22, 0.15)' : 'transparent', color: quantity >= 10 && quantity < 50 ? 'var(--brand-wholesale)' : 'inherit' }}
+                    >
+                      10+ Units (6% Off)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(50)}
+                      style={{ padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', cursor: 'pointer', border: quantity >= 50 && quantity < 100 ? '1px solid var(--brand-wholesale)' : '1px solid var(--border-default)', background: quantity >= 50 && quantity < 100 ? 'rgba(249, 115, 22, 0.15)' : 'transparent', color: quantity >= 50 && quantity < 100 ? 'var(--brand-wholesale)' : 'inherit' }}
+                    >
+                      50+ Units (12% Off)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(100)}
+                      style={{ padding: '3px 8px', borderRadius: '4px', fontSize: '0.72rem', cursor: 'pointer', border: quantity >= 100 ? '1px solid var(--brand-wholesale)' : '1px solid var(--border-default)', background: quantity >= 100 ? 'rgba(249, 115, 22, 0.15)' : 'transparent', color: quantity >= 100 ? 'var(--brand-wholesale)' : 'inherit' }}
+                    >
+                      100+ Mega Bulk (20% Off)
+                    </button>
+                  </div>
                 </div>
 
                 <p className="product-modal-desc">
@@ -142,7 +190,7 @@ export function ProductModal({ product, isOpen, onClose }) {
                     onClick={handleAddToCart}
                   >
                     <ShoppingCart size={18} />
-                    Add to Cart
+                    Add {quantity > 1 ? `${quantity} items` : ''} to Cart
                   </button>
 
                   <button
