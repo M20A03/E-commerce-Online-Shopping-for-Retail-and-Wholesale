@@ -17,6 +17,7 @@ import CartDrawer from './components/CartDrawer';
 import ToastContainer from './components/ToastContainer';
 import CookieConsent from './components/CookieConsent';
 import BrandLoader from './components/BrandLoader';
+import WelcomeSplash from './components/WelcomeSplash';
 
 // Global Scroll Observer for smooth reveals
 function GlobalScrollObserver() {
@@ -123,6 +124,7 @@ const AppContent = () => {
 
   return (
     <div className="app-container">
+      <WelcomeSplash />
       <div className="ambient-glow" aria-hidden="true" />
       <GlobalScrollObserver />
       <ScrollToTop />

@@ -289,7 +289,20 @@ export default function Home() {
           </div>
 
           <aside className="dhv2-signal reveal-right">
-            <h3>Store Assurance</h3>
+            <div className="dhv2-hero-banner-container">
+              <img
+                src="/hero_banner.webp"
+                alt="Roshan Enterprises Storefront Dhanbad"
+                className="dhv2-hero-banner-img"
+                loading="eager"
+                onError={(e) => handleImageError(e, '/hero_banner.png')}
+              />
+              <div className="dhv2-hero-banner-overlay">
+                <span className="dhv2-hero-status-pill">
+                  <span className="dhv2-live-indicator" /> Live in Dhanbad
+                </span>
+              </div>
+            </div>
             <div className="dhv2-signal-grid">
               <article>
                 <strong>15,000+</strong>
@@ -297,7 +310,7 @@ export default function Home() {
               </article>
               <article>
                 <strong>100%</strong>
-                <small>Authentic Products</small>
+                <small>Authentic Quality</small>
               </article>
               <article>
                 <strong>Same-Day</strong>

@@ -1,0 +1,171 @@
+/* Luxury Cinematic Opening Splash for Roshan Enterprises */
+.re-welcome-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 38%, #20140c 0%, #0d0805 100%);
+  color: #f7ede2;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+.re-welcome-splash--fade {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+.re-welcome-glow {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 163, 115, 0.32) 0%, rgba(212, 163, 115, 0) 70%);
+  filter: blur(55px);
+  animation: reSplashGlowPulse 2.8s ease-in-out infinite alternate;
+}
+
+.re-welcome-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.75rem 2.25rem;
+  max-width: 400px;
+  border-radius: 24px;
+  background: rgba(27, 18, 12, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 163, 115, 0.28);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55), 0 0 40px rgba(212, 163, 115, 0.15);
+  animation: reCardPop 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.re-welcome-emblem-wrap {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin-bottom: 1.25rem;
+  display: grid;
+  place-items: center;
+}
+
+.re-welcome-emblem {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 6px 18px rgba(212, 163, 115, 0.45));
+}
+
+.re-spin-slow {
+  transform-origin: 50px 50px;
+  animation: reSpinSlow 14s linear infinite;
+}
+
+.re-pulse-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(212, 163, 115, 0.45);
+  animation: rePulseRing 2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite;
+  pointer-events: none;
+}
+
+.re-welcome-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.re-welcome-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  background: linear-gradient(135deg, #fff2df 0%, #d4a373 50%, #b28b6e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.re-welcome-subtitle {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #c49c74;
+  font-weight: 700;
+  margin-top: 3px;
+}
+
+.re-welcome-tagline {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: #a89484;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.re-welcome-bar {
+  width: 160px;
+  height: 3.5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.re-welcome-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  background: linear-gradient(90deg, transparent, #d4a373, #fff2df, transparent);
+  border-radius: 999px;
+  animation: reShimmer 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.re-welcome-status {
+  font-size: 0.78rem;
+  color: #c9b4a4;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+@keyframes reSplashGlowPulse {
+  0% { transform: scale(0.92); opacity: 0.55; }
+  100% { transform: scale(1.18); opacity: 0.95; }
+}
+
+@keyframes reSpinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rePulseRing {
+  0% { transform: scale(0.95); opacity: 0.85; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+@keyframes reShimmer {
+  0% { left: -50%; }
+  100% { left: 120%; }
+}
+
+@keyframes reCardPop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
