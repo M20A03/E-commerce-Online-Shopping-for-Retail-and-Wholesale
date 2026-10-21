@@ -1,9 +1,29 @@
 import React from 'react';
+import SEO from '../components/SEO';
 import './InfoPages.css';
 
 const ReturnPolicy = () => {
   return (
     <div className="info-page info-page--returns animate-fade-in">
+      <SEO
+        title="Return & Refund Policy | Roshan Enterprises Dhanbad"
+        description="Roshan Enterprises return and refund policy. 7-day hassle-free returns for eligible consumer and wholesale grocery items with prompt refund processing."
+        canonicalPath="/return-policy"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Return Policy', url: '/return-policy' }
+        ]}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          'name': 'Return and Refund Policy',
+          'description': 'Roshan Enterprises 7-day hassle-free return and refund guidelines for retail and wholesale customers.',
+          'publisher': {
+            '@type': 'Organization',
+            'name': 'Roshan Enterprises'
+          }
+        }}
+      />
       <div className="info-shell">
         <div className="info-hero">
           <h1 className="info-title">Return Policy</h1>

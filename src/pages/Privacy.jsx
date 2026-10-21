@@ -1,9 +1,29 @@
 import React from 'react';
+import SEO from '../components/SEO';
 import './InfoPages.css';
 
 const Privacy = () => {
   return (
     <div className="info-page info-page--privacy animate-fade-in">
+      <SEO
+        title="Privacy Policy | Roshan Enterprises Dhanbad"
+        description="Roshan Enterprises data protection and privacy policy. Learn how customer information is safeguarded and used to fulfill orders."
+        canonicalPath="/privacy"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Privacy Policy', url: '/privacy' }
+        ]}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          'name': 'Privacy Policy',
+          'description': 'Roshan Enterprises privacy and customer data protection guidelines.',
+          'publisher': {
+            '@type': 'Organization',
+            'name': 'Roshan Enterprises'
+          }
+        }}
+      />
       <div className="info-shell">
         <div className="info-hero">
           <h1 className="info-title">Privacy Policy</h1>

@@ -5,6 +5,7 @@ import { useCart, calculateTieredPrice } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { evaluateDeliveryZone } from '../router/guards';
 import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
+import SEO from './SEO';
 import './ProductModal.css';
 
 export function ProductModal({ product, isOpen, onClose }) {
@@ -44,6 +45,44 @@ export function ProductModal({ product, isOpen, onClose }) {
   const tiered = calculateTieredPrice(basePrice, quantity);
   const hasWholesaleDiscount = tiered.discountPercent > 0;
 
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: [product.image],
+    description: product.description || `${product.name} available at Roshan Enterprises Dhanbad.`,
+    sku: `RE-${product.id}`,
+    brand: {
+      '@type': 'Brand',
+      name: product.brand || 'Roshan Enterprises'
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://e-commerce-roshan-enterprises-dhn.web.app/products/${product.id}`,
+      priceCurrency: 'INR',
+      price: basePrice,
+      priceValidUntil: '2027-12-31',
+      itemCondition: 'https://schema.org/NewCondition',
+      availability: 'https://schema.org/InStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'Roshan Enterprises'
+      }
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: String(ratingVal),
+      reviewCount: String(reviewsCount)
+    }
+  };
+
+  const productBreadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'Collections', url: '/categories' },
+    ...(product.category ? [{ name: product.category, url: `/categories?cat=${encodeURIComponent(product.category)}` }] : []),
+    { name: product.name, url: `/products/${product.id}` }
+  ];
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -54,6 +93,15 @@ export function ProductModal({ product, isOpen, onClose }) {
           exit={{ opacity: 0 }}
           onClick={onClose}
         >
+          <SEO
+            title={`${product.name} - Buy Online at Best Price | Roshan Enterprises`}
+            description={`${product.description || product.name}. Buy online with fast home delivery and wholesale discounts in Dhanbad, Jharkhand.`}
+            canonicalPath={`/products/${product.id}`}
+            image={product.image}
+            type="product"
+            breadcrumbs={productBreadcrumbs}
+            schema={productSchema}
+          />
           <motion.div
             className="product-modal-container glass-card"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}

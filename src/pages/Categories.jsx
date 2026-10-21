@@ -119,6 +119,18 @@ const Categories = () => {
         title={`${activeCategoryLabel} | Roshan Enterprises Dhanbad`}
         description={`Shop ${activeCategoryLabel} online at Roshan Enterprises. Find high quality mustard oil, sunflower oil, Assam tea, and household supplies in Dhanbad.`}
         canonicalPath={`/categories${activeCategory !== 'all' ? `?cat=${activeCategory}` : ''}`}
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Collections', url: '/categories' },
+          ...(activeCategory !== 'all' ? [{ name: activeCategoryLabel, url: `/categories?cat=${activeCategory}` }] : [])
+        ]}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          'name': `${activeCategoryLabel} - Roshan Enterprises`,
+          'description': `Browse our collection of ${activeCategoryLabel} at wholesale and retail prices in Dhanbad, Jharkhand.`,
+          'url': `https://e-commerce-roshan-enterprises-dhn.web.app/categories${activeCategory !== 'all' ? `?cat=${activeCategory}` : ''}`
+        }}
       />
 
       {/* Page Header */}

@@ -26,20 +26,37 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="canonical" href="https://e-commerce-roshan-enterprises-dhn.web.app/" />
+    <link rel="alternate" hreflang="en-IN" href="https://e-commerce-roshan-enterprises-dhn.web.app/" />
+    <link rel="alternate" hreflang="x-default" href="https://e-commerce-roshan-enterprises-dhn.web.app/" />
+
+    <!-- Search Engine Crawler Directives -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
+
+    <!-- Geotagging & Local SEO for Dhanbad, Jharkhand -->
+    <meta name="geo.region" content="IN-JH" />
+    <meta name="geo.placename" content="Dhanbad, Jharkhand, India" />
+    <meta name="geo.position" content="23.8450;86.4325" />
+    <meta name="ICBM" content="23.8450, 86.4325" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Roshan Enterprises" />
+    <meta property="og:locale" content="en_IN" />
     <meta property="og:url" content="https://e-commerce-roshan-enterprises-dhn.web.app/" />
-    <meta property="og:title" content="Roshan Enterprises | Modern Retail & Wholesale E-commerce" />
-    <meta property="og:description" content="Shop cooking oils, tea, and household essentials with reliable quality and sophisticated doorstep delivery in Dhanbad." />
+    <meta property="og:title" content="Roshan Enterprises | Modern Retail & Wholesale E-commerce Dhanbad" />
+    <meta property="og:description" content="Shop premium cooking oils, authentic Assam tea, and household essentials at wholesale prices with prompt doorstep delivery across Dhanbad, Jharkhand." />
     <meta property="og:image" content="https://e-commerce-roshan-enterprises-dhn.web.app/hero_banner.webp" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Roshan Enterprises Dhanbad E-commerce Storefront" />
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://e-commerce-roshan-enterprises-dhn.web.app/" />
-    <meta property="twitter:title" content="Roshan Enterprises | Modern Retail & Wholesale E-commerce" />
-    <meta property="twitter:description" content="Shop cooking oils, tea, and household essentials with reliable quality and sophisticated doorstep delivery in Dhanbad." />
-    <meta property="twitter:image" content="https://e-commerce-roshan-enterprises-dhn.web.app/hero_banner.webp" />
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://e-commerce-roshan-enterprises-dhn.web.app/" />
+    <meta name="twitter:title" content="Roshan Enterprises | Modern Retail & Wholesale E-commerce Dhanbad" />
+    <meta name="twitter:description" content="Shop premium cooking oils, authentic Assam tea, and household essentials at wholesale prices with prompt doorstep delivery across Dhanbad, Jharkhand." />
+    <meta name="twitter:image" content="https://e-commerce-roshan-enterprises-dhn.web.app/hero_banner.webp" />
 
     <meta name="theme-color" content="#1a120c" />
     <meta name="color-scheme" content="light dark" />
@@ -138,37 +155,102 @@
       }
     </style>
 
-    <!-- Structured Data (JSON-LD) -->
+    <!-- Comprehensive Enterprise Structured Data (JSON-LD Schema Graph) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Store",
-      "name": "Roshan Enterprises",
-      "image": "https://e-commerce-roshan-enterprises-dhn.web.app/logo.webp",
-      "@id": "https://e-commerce-roshan-enterprises-dhn.web.app/",
-      "url": "https://e-commerce-roshan-enterprises-dhn.web.app/",
-      "telephone": "+917004634675",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "RCVG+6G, Satyam Nagar",
-        "addressLocality": "Dhanbad",
-        "addressRegion": "Jharkhand",
-        "postalCode": "826010",
-        "addressCountry": "IN"
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday"
-        ],
-        "opens": "09:00",
-        "closes": "20:00"
-      }
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://e-commerce-roshan-enterprises-dhn.web.app/#website",
+          "url": "https://e-commerce-roshan-enterprises-dhn.web.app/",
+          "name": "Roshan Enterprises",
+          "description": "Premium retail & wholesale grocery e-commerce in Dhanbad, Jharkhand. Cooking oils, Assam tea, and household essentials.",
+          "publisher": {
+            "@id": "https://e-commerce-roshan-enterprises-dhn.web.app/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://e-commerce-roshan-enterprises-dhn.web.app/categories?search={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          },
+          "inLanguage": "en-IN"
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://e-commerce-roshan-enterprises-dhn.web.app/#organization",
+          "name": "Roshan Enterprises",
+          "url": "https://e-commerce-roshan-enterprises-dhn.web.app/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://e-commerce-roshan-enterprises-dhn.web.app/logo.webp",
+            "caption": "Roshan Enterprises Logo"
+          },
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "telephone": "+917004634675",
+              "contactType": "Customer Service",
+              "areaServed": ["IN", "IN-JH"],
+              "availableLanguage": ["English", "Hindi"]
+            },
+            {
+              "@type": "ContactPoint",
+              "telephone": "+917004634675",
+              "contactType": "Wholesale Sales",
+              "areaServed": ["IN-JH"],
+              "availableLanguage": ["English", "Hindi"]
+            }
+          ],
+          "email": "surendrakumardhn@gmail.com"
+        },
+        {
+          "@type": ["GroceryStore", "WholesaleStore"],
+          "@id": "https://e-commerce-roshan-enterprises-dhn.web.app/#store",
+          "name": "Roshan Enterprises",
+          "image": "https://e-commerce-roshan-enterprises-dhn.web.app/hero_banner.webp",
+          "url": "https://e-commerce-roshan-enterprises-dhn.web.app/",
+          "telephone": "+917004634675",
+          "priceRange": "₹₹",
+          "currenciesAccepted": "INR",
+          "paymentAccepted": "Cash on Delivery, UPI, Net Banking",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "RCVG+6G, Satyam Nagar",
+            "addressLocality": "Dhanbad",
+            "addressRegion": "Jharkhand",
+            "postalCode": "826010",
+            "addressCountry": "IN"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 23.8450,
+            "longitude": 86.4325
+          },
+          "areaServed": {
+            "@type": "AdministrativeArea",
+            "name": "Dhanbad and surrounding Jharkhand regions"
+          },
+          "openingHoursSpecification": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              "opens": "09:00",
+              "closes": "20:00"
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Saturday"],
+              "opens": "10:00",
+              "closes": "18:00"
+            }
+          ],
+          "hasMap": "https://www.google.com/maps?q=23.84500,86.43258"
+        }
+      ]
     }
     </script>
   </head>

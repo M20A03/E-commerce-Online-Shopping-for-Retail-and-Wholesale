@@ -1,10 +1,31 @@
 import React from 'react';
 import { Users, ShieldCheck, Truck, HeartHandshake } from 'lucide-react';
+import SEO from '../components/SEO';
 import './InfoPages.css';
 
 const About = () => {
   return (
     <div className="info-page info-page--about animate-fade-in">
+      <SEO
+        title="About Us | Heritage & Quality Standards | Roshan Enterprises Dhanbad"
+        description="Discover the story of Roshan Enterprises, Dhanbad's trusted retail & wholesale distributor of premium cooking oils, authentic Assam tea, and daily household supplies."
+        canonicalPath="/about"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'About Us', path: '/about' }
+        ]}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'AboutPage',
+          name: 'About Roshan Enterprises',
+          description: 'Local-first retail and wholesale distributor in Dhanbad, Jharkhand specializing in quality cooking oils, authentic teas, and household staples.',
+          publisher: {
+            '@type': 'Organization',
+            name: 'Roshan Enterprises',
+            url: 'https://e-commerce-roshan-enterprises-dhn.web.app/'
+          }
+        }}
+      />
       <div className="info-shell">
         <div className="info-hero">
           <h1 className="info-title">About Roshan Enterprises</h1>

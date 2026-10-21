@@ -1,9 +1,57 @@
 import React from 'react';
+import SEO from '../components/SEO';
 import './InfoPages.css';
 
 const FAQ = () => {
   return (
     <div className="info-page info-page--faq animate-fade-in">
+      <SEO
+        title="Frequently Asked Questions (FAQ) | Roshan Enterprises Dhanbad"
+        description="Quick answers about online grocery orders, wholesale rates, delivery zones in Dhanbad, UPI payment verification, and returns."
+        canonicalPath="/faq"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'FAQ', path: '/faq' }
+        ]}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: 'How do I place an order?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Browse our categories, add desired products to cart with retail or wholesale tiers, and proceed to checkout with instant UPI or Cash on Delivery.'
+              }
+            },
+            {
+              '@type': 'Question',
+              name: 'How can I track my order in Dhanbad?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Open the Track Order page and enter your generated order ID (e.g., RE-XXXXX) to view live delivery milestones and dispatch status.'
+              }
+            },
+            {
+              '@type': 'Question',
+              name: 'What is the return window for products?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'You can request a return within 7 days of delivery for eligible packaged household and grocery items.'
+              }
+            },
+            {
+              '@type': 'Question',
+              name: 'Do you offer free shipping in Dhanbad?',
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: 'Yes! Free doorstep shipping is available on qualifying orders above ₹499 across pin codes 826001, 826004, and 826010 in Dhanbad.'
+              }
+            }
+          ]
+        }}
+      />
       <div className="info-shell">
         <div className="info-hero">
           <h1 className="info-title">Frequently Asked Questions</h1>

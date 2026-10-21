@@ -1,9 +1,29 @@
 import React from 'react';
+import SEO from '../components/SEO';
 import './InfoPages.css';
 
 const ShippingPolicy = () => {
   return (
     <div className="info-page info-page--shipping animate-fade-in">
+      <SEO
+        title="Shipping & Delivery Policy | Roshan Enterprises Dhanbad"
+        description="Learn about Roshan Enterprises shipping timelines, delivery charges, express delivery across Dhanbad & Jharkhand, and free shipping on orders above ₹500."
+        canonicalPath="/shipping-policy"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Shipping Policy', url: '/shipping-policy' }
+        ]}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          'name': 'Shipping and Delivery Policy',
+          'description': 'Shipping timelines, rates, and delivery policy for Roshan Enterprises Dhanbad.',
+          'publisher': {
+            '@type': 'Organization',
+            'name': 'Roshan Enterprises'
+          }
+        }}
+      />
       <div className="info-shell">
         <div className="info-hero">
           <h1 className="info-title">Shipping Policy</h1>

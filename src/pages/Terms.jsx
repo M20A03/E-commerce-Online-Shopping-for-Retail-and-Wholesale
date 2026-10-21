@@ -1,9 +1,29 @@
 import React from 'react';
+import SEO from '../components/SEO';
 import './InfoPages.css';
 
 const Terms = () => {
   return (
     <div className="info-page info-page--terms animate-fade-in">
+      <SEO
+        title="Terms & Conditions | Roshan Enterprises Dhanbad"
+        description="Review the terms and conditions for ordering, payments, and delivery services provided by Roshan Enterprises Dhanbad."
+        canonicalPath="/terms"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Terms & Conditions', url: '/terms' }
+        ]}
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          'name': 'Terms and Conditions',
+          'description': 'Roshan Enterprises terms of service, payment guidelines, and conditions of order placement.',
+          'publisher': {
+            '@type': 'Organization',
+            'name': 'Roshan Enterprises'
+          }
+        }}
+      />
       <div className="info-shell">
         <div className="info-hero">
           <h1 className="info-title">Terms and Conditions</h1>

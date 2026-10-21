@@ -1,4 +1,5 @@
 import React from 'react';
+import SEO from '../components/SEO';
 import './InfoPages.css';
 
 const ContactUs = () => {
@@ -6,6 +7,40 @@ const ContactUs = () => {
 
   return (
     <div className="info-page info-page--contact animate-fade-in">
+      <SEO
+        title="Contact Us & Wholesale Inquiries | Roshan Enterprises Dhanbad"
+        description="Get in touch with Roshan Enterprises in Satyam Nagar, Dhanbad. Contact us for bulk wholesale rates, retail orders, or WhatsApp support at +91 7004634675."
+        canonicalPath="/contact"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Contact Us', path: '/contact' }
+        ]}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'ContactPage',
+          name: 'Contact Roshan Enterprises',
+          description: 'Official customer support and wholesale inquiries contact desk for Roshan Enterprises Dhanbad.',
+          mainEntity: {
+            '@type': 'LocalBusiness',
+            name: 'Roshan Enterprises',
+            telephone: '+917004634675',
+            email: 'surendrakumardhn@gmail.com',
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: 'RCVG+6G, Satyam Nagar',
+              addressLocality: 'Dhanbad',
+              addressRegion: 'Jharkhand',
+              postalCode: '826010',
+              addressCountry: 'IN'
+            },
+            geo: {
+              '@type': 'GeoCoordinates',
+              latitude: 23.8450,
+              longitude: 86.4325
+            }
+          }
+        }}
+      />
       <div className="info-shell">
         <div className="info-hero">
           <h1 className="info-title">Contact Us</h1>

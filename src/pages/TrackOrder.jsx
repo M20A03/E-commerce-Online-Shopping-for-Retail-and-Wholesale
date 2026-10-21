@@ -4,6 +4,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { doc, getDoc, collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase-config';
 import { useToast } from '../context/ToastContext';
+import SEO from '../components/SEO';
 import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
 import {
   ORDER_STATUSES,
@@ -374,6 +375,15 @@ const TrackOrder = () => {
 
   return (
     <div className="track-order-page container section animate-fade-in">
+      <SEO
+        title="Track Your Order Live | Roshan Enterprises Dhanbad"
+        description="Track your grocery and wholesale order delivery status in real-time across Dhanbad, Jharkhand. Check dispatch, out for delivery, and courier tracking."
+        canonicalPath="/track-order"
+        breadcrumbs={[
+          { name: 'Home', path: '/' },
+          { name: 'Track Order', path: '/track-order' }
+        ]}
+      />
       {/* Header section */}
       <section className="track-order-hero">
         <span className="track-hero-tag">Live Order Intelligence</span>
