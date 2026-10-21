@@ -142,7 +142,23 @@ const GlassNavbar = ({ theme, toggleTheme, onCartClick, cartButtonRef }) => {
         transition={{ duration: 0.4 }}
       >
         <div className="glass-navbar__inner">
-          <Logo size="medium" />
+          <div className="glass-navbar__brand-wrap">
+            <Logo size="medium" />
+            <span className="glass-navbar__status-pill" title="Serving Dhanbad & Jharkhand with express same-day dispatch">
+              <span className="glass-navbar__status-dot" /> Dhanbad Hub Open
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className="glass-navbar__search-trigger"
+            onClick={() => navigate('/categories')}
+            aria-label="Search all products"
+          >
+            <Search size={15} className="glass-navbar__search-icon" />
+            <span className="glass-navbar__search-text">Search products, oils, tea...</span>
+            <kbd className="glass-navbar__kbd">⌘K</kbd>
+          </button>
 
           <nav className="glass-navbar__links" aria-label="Primary navigation">
             {navLinks.map((link) => (

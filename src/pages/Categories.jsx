@@ -135,10 +135,37 @@ const Categories = () => {
 
       {/* Page Header */}
       <div className="categories-header">
-        <h1 className="heading-1">Our Collections</h1>
+        <div className="categories-header-badge">
+          <span className="live-dot" /> Dhanbad Wholesale & Retail Catalog
+        </div>
+        <h1 className="categories-main-title">Our Premium Collections</h1>
         <p className="categories-subtitle">
-          Explore our premium range of cooking oils, teas, and household essentials carefully selected for retail and wholesale.
+          Explore pure cooking oils, authentic Assam tea, and household essentials available at direct mill wholesale rates.
         </p>
+
+        {/* Quick Modern Category Filter Pills */}
+        <div className="categories-quick-pills" role="tablist" aria-label="Product categories">
+          <button
+            type="button"
+            className={`quick-pill ${activeCategory === 'all' ? 'is-active' : ''}`}
+            onClick={() => handleCategoryClick('all')}
+          >
+            <span>✨</span> All Products
+          </button>
+          {categories.map((cat) => {
+            const icon = cat.id.includes('oil') ? '🛢️' : cat.id.includes('tea') ? '🍃' : cat.id.includes('detergent') ? '🧼' : cat.id.includes('agarbatti') ? '🪔' : '📦';
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                className={`quick-pill ${activeCategory === cat.id ? 'is-active' : ''}`}
+                onClick={() => handleCategoryClick(cat.id)}
+              >
+                <span>{icon}</span> {cat.name}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="categories-layout">
@@ -155,20 +182,23 @@ const Categories = () => {
                 className={`category-btn ${activeCategory === 'all' ? 'active' : ''}`}
                 onClick={() => handleCategoryClick('all')}
               >
-                All Products
+                <span>✨</span> All Products
               </button>
             </li>
-            {categories.map((cat) => (
-              <li key={cat.id}>
-                <button
-                  type="button"
-                  className={`category-btn ${activeCategory === cat.id ? 'active' : ''}`}
-                  onClick={() => handleCategoryClick(cat.id)}
-                >
-                  {cat.name}
-                </button>
-              </li>
-            ))}
+            {categories.map((cat) => {
+              const icon = cat.id.includes('oil') ? '🛢️' : cat.id.includes('tea') ? '🍃' : cat.id.includes('detergent') ? '🧼' : cat.id.includes('agarbatti') ? '🪔' : '📦';
+              return (
+                <li key={cat.id}>
+                  <button
+                    type="button"
+                    className={`category-btn ${activeCategory === cat.id ? 'active' : ''}`}
+                    onClick={() => handleCategoryClick(cat.id)}
+                  >
+                    <span>{icon}</span> {cat.name}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </aside>
 

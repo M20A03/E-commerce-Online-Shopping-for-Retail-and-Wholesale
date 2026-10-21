@@ -31,6 +31,101 @@
   }
 }
 
+.glass-navbar__brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.glass-navbar__status-pill {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #059669;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+@media (min-width: 1100px) {
+  .glass-navbar__status-pill {
+    display: inline-flex;
+  }
+}
+
+.glass-navbar__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* Instant Search Trigger */
+.glass-navbar__search-trigger {
+  display: none;
+  align-items: center;
+  gap: 0.65rem;
+  background-color: var(--bg-surface-subtle);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  padding: 0.45rem 1rem;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  max-width: 320px;
+  flex: 1;
+}
+
+@media (min-width: 860px) {
+  .glass-navbar__search-trigger {
+    display: flex;
+  }
+}
+
+.glass-navbar__search-trigger:hover {
+  background-color: var(--bg-surface);
+  border-color: var(--brand-primary);
+  color: var(--text-secondary);
+  box-shadow: 0 0 0 3px var(--brand-primary-glow);
+}
+
+.glass-navbar__search-icon {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.glass-navbar__search-text {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.glass-navbar__kbd {
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
 /* Nav links */
 .glass-navbar__links {
   display: none;

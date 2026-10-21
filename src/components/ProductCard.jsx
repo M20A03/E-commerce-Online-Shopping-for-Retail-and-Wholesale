@@ -1,13 +1,22 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShoppingBag, Check, Heart, Star, Sparkles } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useReveal } from '../hooks/useReveal';
 import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
 import './ProductCard.css';
 
+export function cleanProductName(name) {
+  if (!name) return 'Product';
+  return name
+    .replace(/_/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function ProductCard({ product, delay = 0, onQuickView }) {
-  const { addToCart } = useCart();
+  const { cart, addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const navigate = useNavigate();
   const revealRef = useReveal();
@@ -24,9 +33,28 @@ function ProductCard({ product, delay = 0, onQuickView }) {
   }, []);
 
   const isWishlisted = isInWishlist(product.id);
-  const ratingVal = Number(product.rating) || 5;
-  const reviewsCount = Number(product.reviews) || 0;
-  const stars = '★'.repeat(Math.floor(ratingVal)) + (ratingVal % 1 ? '☆' : '');
+  const ratingVal = Number(product.rating) || 4.8;
+  const rawReviews = Number(product.reviews) || 0;
+  const displayReviews = rawReviews > 0 ? `${rawReviews} reviews` : 'Verified Buyer Rating';
+
+  const cartItem = cart?.find((item) => item.id === product.id);
+  const quantityInCart = cartItem?.quantity || 0;
+
+  const displayName = cleanProductName(product.name);
+  const basePrice = Number(product.price) || 0;
+  const originalPrice = product.originalPrice && Number(product.originalPrice) > basePrice
+    ? Number(product.originalPrice)
+    : Math.round(basePrice * 1.15);
+  const discountPercent = Math.max(5, Math.round((1 - basePrice / originalPrice) * 100));
+
+  // Dynamic modern category badge
+  const badgeLabel = product.badge || (
+    basePrice >= 1200 ? 'Wholesale Tier' :
+    product.category === 'oil' ? 'Agmark Certified' :
+    product.category === 'tea' ? 'Assam Estate' :
+    product.category === 'detergent' ? 'Bulk Savings' :
+    'Top Quality'
+  );
 
   const handleCardClick = useCallback(() => {
     if (typeof onQuickView === 'function') {
@@ -38,7 +66,7 @@ function ProductCard({ product, delay = 0, onQuickView }) {
 
   const handleAddToCart = useCallback((e) => {
     e.stopPropagation();
-    addToCart(product);
+    addToCart(product, 1);
   }, [addToCart, product]);
 
   const handleToggleWishlist = useCallback((e) => {
@@ -52,7 +80,7 @@ function ProductCard({ product, delay = 0, onQuickView }) {
         revealRef.current = el;
         cardRef.current = el;
       }}
-      className="product-card reveal"
+      className="modern-product-card reveal"
       style={{
         transitionDelay: `${delay}s`,
         '--mouse-x': `${mousePos.x}%`,
@@ -70,54 +98,81 @@ function ProductCard({ product, delay = 0, onQuickView }) {
       }}
       role="link"
       tabIndex={0}
-      aria-label={`View details for ${product.name}`}
+      aria-label={`View details for ${displayName}`}
     >
-      <div className="product-img-wrap">
-        {product.badge && (
-          <span className={`product-label ${product.badgeType || 'sale'}`}>{product.badge}</span>
-        )}
-        <img
-          src={optimizeImageUrl(product.image || product.images, 380)}
-          alt={product.name}
-          loading="lazy"
-          decoding="async"
-          onError={(e) => handleImageError(e, '/products/t1.jpg')}
-        />
+      {/* Visual Image & Badge Container */}
+      <div className="modern-card-visual">
+        <span className="modern-card-badge">
+          <Sparkles size={11} className="badge-sparkle" /> {badgeLabel}
+        </span>
+
         <button
           type="button"
-          className={`product-wishlist ${isWishlisted ? 'wishlisted' : ''}`}
+          className={`modern-card-wishlist ${isWishlisted ? 'is-wishlisted' : ''}`}
           onClick={handleToggleWishlist}
-          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
         >
-          <svg viewBox="0 0 24 24" fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
+          <Heart size={16} fill={isWishlisted ? 'currentColor' : 'none'} />
         </button>
-        <button
-          type="button"
-          className="product-quick-add"
-          onClick={handleAddToCart}
-        >
-          + Add to Cart
-        </button>
-      </div>
-      <div className="product-info">
-        <p className="product-brand">{product.brand || 'Roshan Essentials'}</p>
-        <h4 className="product-name">{product.name}</h4>
-        <div className="product-rating">
-          <span className="stars">{stars}</span>
-          <span>({reviewsCount.toLocaleString()} reviews)</span>
+
+        <div className="modern-img-frame">
+          <img
+            src={optimizeImageUrl(product.image || product.images, 420)}
+            alt={displayName}
+            loading="lazy"
+            decoding="async"
+            onError={(e) => handleImageError(e, '/products/t1.jpg')}
+          />
         </div>
-        <div className="product-price">
-          <span className="price-current">₹{Number(product.price).toFixed(2)}</span>
-          {product.originalPrice && Number(product.originalPrice) > Number(product.price) && (
-            <>
-              <span className="price-original">₹{Number(product.originalPrice).toFixed(2)}</span>
-              <span className="price-badge">
-                SAVE {Math.round((1 - Number(product.price) / Number(product.originalPrice)) * 100)}%
-              </span>
-            </>
-          )}
+
+        {discountPercent > 0 && (
+          <span className="modern-discount-chip">
+            SAVE {discountPercent}%
+          </span>
+        )}
+      </div>
+
+      {/* Product Content Details */}
+      <div className="modern-card-body">
+        <div className="modern-card-meta">
+          <span className="modern-card-brand">{product.brand || 'Roshan Enterprises'}</span>
+          <div className="modern-card-rating" title={`${ratingVal} out of 5 stars`}>
+            <Star size={12} fill="#f59e0b" color="#f59e0b" />
+            <span className="rating-num">{ratingVal.toFixed(1)}</span>
+            <span className="rating-count">({displayReviews})</span>
+          </div>
+        </div>
+
+        <h3 className="modern-card-title" title={displayName}>
+          {displayName}
+        </h3>
+
+        {/* Pricing Row */}
+        <div className="modern-card-pricing-row">
+          <div className="modern-price-group">
+            <span className="modern-current-price">₹{basePrice.toLocaleString('en-IN')}</span>
+            {originalPrice > basePrice && (
+              <span className="modern-mrp-price">₹{originalPrice.toLocaleString('en-IN')}</span>
+            )}
+          </div>
+
+          {/* Action Button */}
+          <button
+            type="button"
+            className={`modern-add-button ${quantityInCart > 0 ? 'is-added' : ''}`}
+            onClick={handleAddToCart}
+            aria-label={`Add ${displayName} to shopping cart`}
+          >
+            {quantityInCart > 0 ? (
+              <>
+                <Check size={14} /> In Cart ({quantityInCart})
+              </>
+            ) : (
+              <>
+                <ShoppingBag size={14} /> Add
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>

@@ -57,7 +57,8 @@
 .dhv2-hero {
   position: relative;
   padding: var(--space-12) 0 var(--space-16);
-  background: radial-gradient(circle at 80% 20%, var(--brand-primary-glow) 0%, transparent 50%),
+  background: radial-gradient(circle at 15% 20%, rgba(37, 99, 235, 0.12) 0%, transparent 45%),
+              radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
               linear-gradient(180deg, var(--bg-surface-subtle) 0%, var(--bg-app) 100%);
   border-bottom: 1px solid var(--border-default);
   overflow: hidden;
@@ -132,36 +133,38 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem;
+  padding: 0.85rem 1.85rem;
   font-size: var(--text-sm);
-  font-weight: 600;
-  border-radius: var(--radius-md);
+  font-weight: 700;
+  border-radius: var(--radius-full);
   transition: all var(--transition-fast);
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .dhv2-btn-primary {
-  background-color: var(--brand-primary);
-  color: var(--text-inverse);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  border: none;
 }
 
 .dhv2-btn-primary:hover {
-  background-color: var(--brand-primary-hover);
-  box-shadow: var(--shadow-glow);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
 }
 
 .dhv2-btn-outline {
   background-color: var(--bg-surface);
   color: var(--text-primary);
   border: 1px solid var(--border-default);
-  box-shadow: var(--shadow-xs);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .dhv2-btn-outline:hover {
   background-color: var(--bg-surface-hover);
-  border-color: var(--border-strong);
+  border-color: var(--brand-primary);
+  transform: translateY(-2px);
 }
 
 .dhv2-pills {
@@ -177,8 +180,9 @@
   color: var(--text-secondary);
   background-color: var(--bg-surface);
   border: 1px solid var(--border-default);
-  padding: 0.35rem 0.75rem;
+  padding: 0.4rem 0.95rem;
   border-radius: var(--radius-full);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 /* Hero Signal Card */
@@ -279,9 +283,12 @@
 /* ─── Infinite Marquee Strip ─── */
 .dhv2-strip {
   width: 100%;
-  background-color: var(--brand-primary);
-  color: var(--text-inverse);
-  padding: 0.625rem 0;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.05) 0%, rgba(16, 185, 129, 0.05) 50%, rgba(37, 99, 235, 0.05) 100%);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-primary);
+  padding: 0.85rem 0;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -289,14 +296,25 @@
 .dhv2-strip-track {
   display: inline-flex;
   gap: var(--space-8);
-  animation: marquee 25s linear infinite;
+  animation: marquee 28s linear infinite;
 }
 
 .dhv2-strip-track span {
-  font-size: var(--text-xs);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
   font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dhv2-strip-track span::before {
+  content: '✦';
+  color: var(--brand-primary);
+  font-size: 0.75rem;
 }
 
 @keyframes marquee {
@@ -385,23 +403,29 @@
   grid-template-columns: 1fr;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-xl, 24px);
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08);
+  transition: all var(--transition-normal);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 860px) {
   .dhv2-carousel-card {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.15fr 0.85fr;
   }
 }
 
 .dhv2-carousel-card img {
   width: 100%;
   height: 100%;
-  min-height: 280px;
-  max-height: 380px;
+  min-height: 320px;
+  max-height: 440px;
   object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dhv2-carousel-card:hover img {
+  transform: scale(1.03);
 }
 
 .dhv2-carousel-copy {
@@ -409,6 +433,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: var(--bg-surface);
 }
 
 .dhv2-carousel-copy h3 {

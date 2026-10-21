@@ -8,24 +8,24 @@ import './Homepage.css';
 
 const slides = [
   {
-    title: 'Premium Mustard & Refined Oils',
-    text: '100% pure double-refined cooking oils and kachi ghani mustard oil for healthy, authentic everyday meals.',
-    metric: 'Guaranteed Purity & Quality',
-    image: 'https://res.cloudinary.com/dbtilvzbi/image/upload/v1778042502/Fortune_1Litre_Palm_Pouch_mb49mb.jpg',
+    title: 'Pure Mustard & Refined Oils',
+    text: '100% Agmark certified kachi ghani mustard oil and double-refined cooking oils for authentic, wholesome cooking.',
+    metric: 'Guaranteed Purity & Agmark Quality',
+    image: '/images/showcase_cooking_oils.jpg',
     fallback: '/products/o1.jpg',
   },
   {
     title: 'Authentic Assam & Darjeeling Teas',
-    text: 'Handpicked fresh tea leaves with rich aroma and robust flavor, sourced directly from certified tea estates.',
-    metric: 'Fresh Batch Guarantee',
-    image: 'https://res.cloudinary.com/dbtilvzbi/image/upload/v1778042491/Elachi_Tea_1Kg_Box_irolbo.jpg',
+    text: 'Handpicked fresh estate tea leaves with deep aroma and robust liquor, sourced directly from premier tea gardens.',
+    metric: 'Fresh Batch Estate Guarantee',
+    image: '/images/showcase_assam_tea.jpg',
     fallback: '/products/t1.jpg',
   },
   {
     title: 'Household & Cleaning Supplies',
-    text: 'Top-grade laundry detergents, dishwashing bars, and hygiene essentials available at direct wholesale rates.',
-    metric: 'Wholesale Bulk Savings',
-    image: 'https://res.cloudinary.com/dbtilvzbi/image/upload/v1778042482/Doctor_5Kg_Detergent_bvdxc8.jpg',
+    text: 'High-efficiency laundry detergents, dishwashing bars, and hygiene supplies available with bulk wholesale pricing.',
+    metric: 'Direct Mill Wholesale Savings',
+    image: '/images/showcase_household_cleaning.jpg',
     fallback: '/products/d2.jpg',
   },
 ];
@@ -448,22 +448,9 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="dhv2-product-track">
-          {visibleCarouselProducts.map((product) => (
-            <Link key={product.id} to={`/categories?cat=${product.category || 'all'}`} className="dhv2-product-slide">
-              <img
-                src={optimizeImageUrl(product.image || product.images, 320)}
-                alt={product.name}
-                loading="lazy"
-                decoding="async"
-                onError={(e) => handleImageError(e, '/products/t1.jpg')}
-              />
-              <div>
-                <h4>{product.name}</h4>
-                <p>{product.brand || 'Roshan Enterprises'}</p>
-                <strong>₹{product.price.toFixed(2)}</strong>
-              </div>
-            </Link>
+        <div className="products-full-grid dhv2-product-track">
+          {visibleCarouselProducts.map((product, idx) => (
+            <ProductCard key={product.id} product={product} delay={idx * 0.05} />
           ))}
         </div>
       </section>
