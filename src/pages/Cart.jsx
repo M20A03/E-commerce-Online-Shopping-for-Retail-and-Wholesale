@@ -69,7 +69,9 @@ const Cart = () => {
                       />
                       <div>
                         <h4 className="cart-item-name">
-                          <Link to={`/categories?cat=${item.category || 'all'}`}>{item.name}</Link>
+                          <Link to={`/categories?cat=${item.category || 'all'}`}>
+                            {(item.name || '').replace(/_/g, ' ')}
+                          </Link>
                         </h4>
                         {hasWholesaleDiscount ? (
                           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(249, 115, 22, 0.12)', border: '1px solid var(--brand-wholesale)', color: 'var(--brand-wholesale)', fontSize: '0.75rem', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', margin: '4px 0' }}>

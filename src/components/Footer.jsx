@@ -1,7 +1,20 @@
 // IMPROVEMENT: Memoized Footer with vector Logo, real social URLs, GDPR Manage Cookies trigger, and Admin Portal wiring
 import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Truck, Headphones, CreditCard, Globe, MessageCircle, Send, Cookie, Shield } from 'lucide-react';
+import { 
+  ShieldCheck, 
+  Truck, 
+  Headphones, 
+  CreditCard, 
+  Globe, 
+  MessageCircle, 
+  Send, 
+  Cookie, 
+  Shield, 
+  MapPin, 
+  Phone, 
+  Mail 
+} from 'lucide-react';
 import Logo from './Logo';
 import './Footer.css';
 
@@ -20,8 +33,8 @@ const Footer = () => {
           {/* Brand Info */}
           <div className="footer-brand">
             <Logo size="large" />
-            <p className="footer-desc" style={{ marginTop: '1rem' }}>
-              Your one-stop destination for premium products. Experience quality, elegance, and fast delivery all in one place.
+            <p className="footer-desc">
+              Premier FMCG & grocery destination in Dhanbad. Authorized wholesale distributor & retail provider of oils, teas, and home essentials.
             </p>
             <div className="footer-social">
               <a
@@ -54,37 +67,40 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="footer-links-col">
-            <h4 className="footer-heading">Quick Links</h4>
-            <ul className="footer-links">
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/about">About Us</Link></li>
-              <li><Link to="/categories">Categories</Link></li>
-              <li><Link to="/track-order">Track Order</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
-            </ul>
-          </div>
+          {/* Links Group: 2-column on mobile, inline grid columns on desktop */}
+          <div className="footer-links-group">
+            {/* Quick Links */}
+            <div className="footer-links-col">
+              <h4 className="footer-heading">Quick Links</h4>
+              <ul className="footer-links">
+                <li><Link to="/">Home</Link></li>
+                <li><Link to="/about">About Us</Link></li>
+                <li><Link to="/categories">Categories</Link></li>
+                <li><Link to="/track-order">Track Order</Link></li>
+                <li><Link to="/contact">Contact</Link></li>
+              </ul>
+            </div>
 
-          {/* Support & Legal */}
-          <div className="footer-links-col">
-            <h4 className="footer-heading">Support</h4>
-            <ul className="footer-links">
-              <li><Link to="/orders">Order History</Link></li>
-              <li><Link to="/shipping-policy">Shipping Policy</Link></li>
-              <li><Link to="/return-policy">Return Policy</Link></li>
-              <li><Link to="/faq">FAQ</Link></li>
-              <li><Link to="/account">My Account</Link></li>
-              <li>
-                <button
-                  type="button"
-                  onClick={handleOpenCookieConsent}
-                  className="footer-cookie-btn"
-                >
-                  <Cookie size={14} /> Manage Cookies
-                </button>
-              </li>
-            </ul>
+            {/* Support & Legal */}
+            <div className="footer-links-col">
+              <h4 className="footer-heading">Support</h4>
+              <ul className="footer-links">
+                <li><Link to="/orders">Order History</Link></li>
+                <li><Link to="/shipping-policy">Shipping Policy</Link></li>
+                <li><Link to="/return-policy">Return Policy</Link></li>
+                <li><Link to="/faq">FAQ</Link></li>
+                <li><Link to="/account">My Account</Link></li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={handleOpenCookieConsent}
+                    className="footer-cookie-btn"
+                  >
+                    <Cookie size={14} /> Manage Cookies
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Contact Info & Admin Link */}
@@ -92,28 +108,29 @@ const Footer = () => {
             <h4 className="footer-heading">Contact Us</h4>
             <ul className="footer-contact">
               <li>
-                <span className="contact-icon">Location</span>
+                <span className="contact-icon"><MapPin size={16} /></span>
                 <span>
                   <a
                     href="https://maps.app.goo.gl/EgYHSHAsKaKmMsxT8"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ color: 'inherit', textDecoration: 'none' }}
                   >
                     Roshan Enterprises, Dhanbad
                   </a>
                 </span>
               </li>
               <li>
-                <span className="contact-icon">Phone</span>
-                <span>+91 7004634675</span>
+                <span className="contact-icon"><Phone size={16} /></span>
+                <span><a href="tel:+917004634675">+91 7004634675</a></span>
               </li>
               <li>
-                <span className="contact-icon">Mail</span>
-                <span>surendrakumardhn@gmail.com</span>
+                <span className="contact-icon"><Mail size={16} /></span>
+                <span><a href="mailto:surendrakumardhn@gmail.com">surendrakumardhn@gmail.com</a></span>
               </li>
-              <li>
-                <Link to="/privacy">Privacy Policy</Link> <span>|</span> <Link to="/terms">Terms</Link>
+              <li className="footer-policy-links">
+                <Link to="/privacy">Privacy Policy</Link>
+                <span className="divider">•</span>
+                <Link to="/terms">Terms</Link>
               </li>
               <li style={{ marginTop: '0.5rem' }}>
                 <a

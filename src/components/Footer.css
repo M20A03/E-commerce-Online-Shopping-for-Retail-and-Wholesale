@@ -1,86 +1,356 @@
 /* ============================================================
-   ROSHAN ENTERPRISES — MODERN FOOTER STYLES
+   ROSHAN ENTERPRISES — 2026 LUXURY RESPONSIVE FOOTER STYLES
    ============================================================ */
 
 .footer {
   position: relative;
-  background-color: var(--bg-surface);
-  border-top: 1px solid var(--border-default);
-  padding: var(--space-12) 0 var(--space-8);
+  background-color: var(--bg-surface, #ffffff);
+  border-top: 1px solid var(--border-default, #e2e8f0);
+  padding: 4rem 0 2rem;
   margin-top: auto;
+  overflow: hidden;
 }
 
+.footer-top-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #10b981 30%, #f59e0b 70%, transparent 100%);
+  opacity: 0.8;
+}
+
+.footer .container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.relative-z {
+  position: relative;
+  z-index: 2;
+}
+
+/* ─── Footer Grid ─── */
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-8);
-  margin-bottom: var(--space-10);
+  gap: 2.5rem;
+  margin-bottom: 3rem;
 }
 
 @media (min-width: 640px) {
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .footer-grid {
-    grid-template-columns: 1.5fr 1fr 1fr 1fr;
-    gap: var(--space-10);
+    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+    gap: 3rem;
   }
 }
 
-.footer-logo {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: var(--space-3);
-  display: inline-block;
+/* Links Group: 2-column compact layout on mobile, natural grid items on tablet & desktop */
+.footer-links-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .footer-links-group {
+    display: contents;
+  }
+}
+
+/* ─── Brand Column ─── */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
 }
 
 .footer-desc {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  line-height: 1.6;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #64748b);
+  line-height: 1.65;
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
   max-width: 320px;
-  margin-bottom: var(--space-4);
 }
 
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.social-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-surface-subtle, #f8fafc);
+  border: 1px solid var(--border-default, #cbd5e1);
+  color: var(--text-secondary, #475569);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.social-icon:hover {
+  background: #059669;
+  border-color: #059669;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
+/* ─── Headings & Links ─── */
 .footer-heading {
-  font-size: var(--text-sm);
+  font-family: var(--font-display, inherit);
+  font-size: 0.9375rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--text-primary, #0f172a);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: var(--space-4);
+  margin-bottom: 1.25rem;
 }
 
 .footer-links {
   list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 0.75rem;
 }
 
-.footer-link {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  transition: color var(--transition-fast);
+.footer-links li a {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #64748b);
+  text-decoration: none;
+  transition: color 0.15s ease, transform 0.15s ease;
+  display: inline-block;
 }
 
-.footer-link:hover {
-  color: var(--brand-primary);
+.footer-links li a:hover {
+  color: var(--brand-primary, #059669);
+  transform: translateX(3px);
 }
 
+.footer-cookie-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #64748b);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  transition: color 0.15s ease;
+}
+
+.footer-cookie-btn:hover {
+  color: var(--brand-primary, #059669);
+}
+
+/* ─── Contact List ─── */
+.footer-contact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.footer-contact li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #64748b);
+}
+
+.footer-contact li a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  word-break: break-word;
+}
+
+.footer-contact li a:hover {
+  color: var(--brand-primary, #059669);
+}
+
+.contact-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.footer-policy-links {
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.footer-policy-links .divider {
+  color: var(--text-tertiary, #94a3b8);
+}
+
+.footer-admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: var(--bg-surface-subtle, #f8fafc);
+  border: 1px solid var(--border-default, #cbd5e1);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary, #475569) !important;
+  transition: all 0.2s ease;
+}
+
+.footer-admin-link:hover {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  color: #059669 !important;
+}
+
+/* ─── Trust Badges ─── */
+.footer-trust-badges {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--bg-surface-subtle, #f8fafc);
+  border: 1px solid var(--border-default, #e2e8f0);
+  border-radius: var(--radius-xl, 16px);
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .footer-trust-badges {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+  }
+}
+
+.trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.trust-badge svg {
+  color: #059669;
+  flex-shrink: 0;
+  padding: 8px;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.trust-badge h6 {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+  margin: 0 0 2px 0;
+}
+
+.trust-badge p {
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #64748b);
+  margin: 0;
+}
+
+/* ─── Bottom Copyright & Payment Pills ─── */
 .footer-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--border-default);
-  font-size: var(--text-xs);
-  color: var(--text-tertiary);
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border-default, #e2e8f0);
   flex-wrap: wrap;
-  gap: var(--space-4);
+  gap: 1.25rem;
+}
+
+.copyright-text {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary, #94a3b8);
+  margin: 0;
+}
+
+.footer-payments {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-payments span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary, #475569);
+  padding: 0.25rem 0.65rem;
+  background: var(--bg-surface-subtle, #f8fafc);
+  border: 1px solid var(--border-default, #e2e8f0);
+  border-radius: 6px;
+}
+
+/* ─── Mobile Specific Optimizations ─── */
+@media (max-width: 639px) {
+  .footer {
+    padding-top: 3rem;
+    /* Ample bottom clearance for mobile sticky bottom navigation bar */
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .footer-grid {
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Split Quick Links and Support into side-by-side columns on mobile */
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Wrap the middle two link columns in mobile flex row if needed */
+  .footer-links-col {
+    padding-bottom: 0.5rem;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .footer-payments {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }

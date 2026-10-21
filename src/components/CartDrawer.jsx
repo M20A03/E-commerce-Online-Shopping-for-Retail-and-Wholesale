@@ -112,15 +112,17 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 />
                 <div className="cart-drawer__item-body">
                   <div className="cart-drawer__item-top">
-                    <div>
-                      <h3 className="cart-drawer__item-title">{item.name}</h3>
+                    <div className="cart-drawer__item-info">
+                      <h3 className="cart-drawer__item-title">
+                        {(item.name || '').replace(/_/g, ' ')}
+                      </h3>
                       <p className="cart-drawer__item-price">₹{Number(item.price).toFixed(2)}</p>
                     </div>
                     <button
                       type="button"
                       className="cart-drawer__remove"
                       onClick={() => removeFromCart(item.id)}
-                      aria-label={`Remove ${item.name} from cart`}
+                      aria-label={`Remove ${(item.name || '').replace(/_/g, ' ')} from cart`}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -145,7 +147,9 @@ const CartDrawer = ({ isOpen, onClose }) => {
                         <Plus size={14} />
                       </button>
                     </div>
-                    <strong>₹{(Number(item.price) * item.quantity).toFixed(2)}</strong>
+                    <strong className="cart-drawer__item-line-total">
+                      ₹{(Number(item.price) * item.quantity).toFixed(2)}
+                    </strong>
                   </div>
                 </div>
               </MotionDiv>
@@ -161,19 +165,21 @@ const CartDrawer = ({ isOpen, onClose }) => {
             </div>
             <div className="cart-drawer__summary-row">
               <span className="cart-drawer__summary-label">Estimated Delivery</span>
-              <strong>{amountToFreeShipping === 0 ? 'FREE' : '₹49.00'}</strong>
+              <strong className={amountToFreeShipping === 0 ? 'text-success' : ''}>
+                {amountToFreeShipping === 0 ? 'FREE' : '₹49.00'}
+              </strong>
             </div>
-            <div className="cart-drawer__summary-row">
+            <div className="cart-drawer__summary-row cart-drawer__summary-row--total">
               <span className="cart-drawer__summary-label">Total Amount</span>
               <strong className="cart-drawer__summary-total">₹{(total + (amountToFreeShipping === 0 ? 0 : 49)).toFixed(2)}</strong>
             </div>
             <div className="cart-drawer__actions">
-              <Link to="/cart" className="glass-button glass-button--soft" onClick={onClose}>
+              <Link to="/cart" className="cart-drawer__btn cart-drawer__btn--secondary" onClick={onClose}>
                 View Full Cart
               </Link>
               <button
                 type="button"
-                className="glass-button glass-button--primary"
+                className="cart-drawer__btn cart-drawer__btn--primary"
                 onClick={handleCheckoutClick}
               >
                 Checkout <ArrowRight size={16} />
