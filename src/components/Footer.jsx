@@ -10,7 +10,6 @@ import {
   MessageCircle, 
   Send, 
   Cookie, 
-  Shield, 
   MapPin, 
   Phone, 
   Mail 
@@ -131,16 +130,6 @@ const Footer = () => {
                 <Link to="/privacy">Privacy Policy</Link>
                 <span className="divider">•</span>
                 <Link to="/terms">Terms</Link>
-              </li>
-              <li style={{ marginTop: '0.5rem' }}>
-                <a
-                  href="/admin/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer-admin-link"
-                >
-                  <Shield size={14} /> Admin Portal
-                </a>
               </li>
             </ul>
           </div>

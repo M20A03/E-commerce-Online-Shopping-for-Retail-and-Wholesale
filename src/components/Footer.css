@@ -214,26 +214,6 @@
   color: var(--text-tertiary, #94a3b8);
 }
 
-.footer-admin-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  background: var(--bg-surface-subtle, #f8fafc);
-  border: 1px solid var(--border-default, #cbd5e1);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary, #475569) !important;
-  transition: all 0.2s ease;
-}
-
-.footer-admin-link:hover {
-  background: rgba(16, 185, 129, 0.1) !important;
-  border-color: rgba(16, 185, 129, 0.3) !important;
-  color: #059669 !important;
-}
-
 /* ─── Trust Badges ─── */
 .footer-trust-badges {
   display: grid;
