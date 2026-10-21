@@ -1,8 +1,10 @@
+// IMPROVEMENT: Enterprise Touch-Friendly Mobile Order History with Real-Time Firestore Sync, Normalized Statuses, Direct WhatsApp Support, and Item Previews
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../firebase-config';
+import { useToast } from '../context/ToastContext';
 import {
   Package,
   Calendar,
@@ -12,15 +14,27 @@ import {
   PackageCheck,
   MapPinned,
   Search,
-  ExternalLink,
   LogIn,
-  ShoppingBag
+  ShoppingBag,
+  Copy,
+  MessageSquare,
+  Phone,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { optimizeImageUrl, handleImageError } from '../utils/imageOptimizer';
+import {
+  ORDER_STATUSES,
+  ORDER_STATUS_LABELS,
+  ORDER_STEP_KEYS,
+  normalizeOrderStatus,
+  getOrderStepIndex
+} from '../utils/orderLifecycle';
 import './OrderHistory.css';
 
 const OrderHistory = () => {
   const { user, loginWithGoogle } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const urlOrderId = searchParams.get('orderId') || searchParams.get('id') || searchParams.get('order_id') || '';
@@ -31,6 +45,7 @@ const OrderHistory = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState(urlStatus ? urlStatus.toLowerCase() : 'all');
   const [searchQuery, setSearchQuery] = useState(urlOrderId || '');
+  const [copiedId, setCopiedId] = useState('');
 
   useEffect(() => {
     if (urlOrderId) {
@@ -95,7 +110,6 @@ const OrderHistory = () => {
       },
       (error) => {
         console.error('Error fetching Firestore orders:', error);
-        // Fallback to local orders
         setOrders(localOrders.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)));
         setIsLoading(false);
       }
@@ -108,8 +122,10 @@ const OrderHistory = () => {
     return orders.filter((item) => {
       // Status filter
       if (statusFilter !== 'all') {
-        const normStatus = (item.status || '').toLowerCase();
-        if (normStatus !== statusFilter) return false;
+        const canonical = normalizeOrderStatus(item.status);
+        if (canonical.toLowerCase() !== statusFilter && (item.status || '').toLowerCase() !== statusFilter) {
+          return false;
+        }
       }
 
       // Search query filter (Order ID, customer name, or item name)
@@ -129,33 +145,42 @@ const OrderHistory = () => {
     });
   }, [orders, statusFilter, searchQuery]);
 
-  const getTrackingSteps = (status = '') => {
-    const normalized = status.toLowerCase();
-    const finalStep = normalized.includes('deliver')
-      ? 4
-      : normalized.includes('ship') || normalized.includes('transit')
-      ? 3
-      : normalized.includes('pack')
-      ? 2
-      : 1;
+  const copyOrderRef = (id) => {
+    if (id) {
+      navigator.clipboard.writeText(id);
+      setCopiedId(id);
+      if (addToast) addToast(`Copied #${id}`, 'success');
+      setTimeout(() => setCopiedId(''), 2000);
+    }
+  };
 
-    return [
-      { label: 'Order placed', done: finalStep >= 1, icon: Package },
-      { label: 'Packed', done: finalStep >= 2, icon: PackageCheck },
-      { label: 'Shipped', done: finalStep >= 3, icon: Truck },
-      { label: 'Delivered', done: finalStep >= 4, icon: CircleCheck }
-    ];
+  const getOrderStatusBadge = (rawStatus) => {
+    const canonical = normalizeOrderStatus(rawStatus);
+    const label = ORDER_STATUS_LABELS[canonical] || rawStatus || 'Order Placed';
+
+    let badgeClass = 'status-default';
+    if (canonical === ORDER_STATUSES.DELIVERED) badgeClass = 'status-delivered';
+    else if (canonical === ORDER_STATUSES.OUT_FOR_DELIVERY) badgeClass = 'status-out';
+    else if (canonical === ORDER_STATUSES.DISPATCHED) badgeClass = 'status-dispatched';
+    else if (canonical === ORDER_STATUSES.PACKED) badgeClass = 'status-packed';
+    else if (canonical === ORDER_STATUSES.CONFIRMED) badgeClass = 'status-confirmed';
+    else if (canonical === ORDER_STATUSES.CANCELLED) badgeClass = 'status-cancelled';
+
+    return <span className={`order-status-badge ${badgeClass}`}>{label}</span>;
   };
 
   const getPaymentMethodLabel = (method = '') => {
-    const norm = method.toLowerCase();
+    const norm = String(method).toLowerCase();
     if (norm === 'card') return 'Credit / Debit Card';
-    if (norm === 'upi') return 'UPI Payment';
+    if (norm === 'upi') return 'Direct UPI';
     if (norm === 'cod') return 'Cash on Delivery';
     return 'Online Payment';
   };
 
   const getDeliveryMeta = (order) => {
+    if (order.eta) {
+      return { dateText: order.eta, daysText: 'Dynamic Pincode Window' };
+    }
     const sourceDate = order.estimatedDeliveryDate
       ? new Date(order.estimatedDeliveryDate)
       : new Date(new Date(order.date || Date.now()).getTime() + 3 * 24 * 60 * 60 * 1000);
@@ -175,37 +200,23 @@ const OrderHistory = () => {
     };
   };
 
-  const getOrderStatusClass = (status = '') => {
-    const normalized = status.toLowerCase();
-    if (normalized.includes('deliver')) return 'delivered';
-    if (normalized.includes('cancel')) return 'cancelled';
-    if (
-      normalized.includes('ship') ||
-      normalized.includes('process') ||
-      normalized.includes('confirm')
-    ) {
-      return 'processing';
-    }
-    return 'default';
-  };
-
   return (
-    <div className="container section animate-fade-in" style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
+    <div className="orders-page-container container section animate-fade-in">
       {/* Top Header */}
-      <div className="orders-header-row" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div className="orders-header-row">
         <div>
-          <h1 className="heading-1" style={{ margin: 0 }}>Order History</h1>
-          <p className="text-muted" style={{ margin: '0.25rem 0 0', fontSize: '0.95rem' }}>
-            Track recent shipments, view order receipts, and manage deliveries.
+          <h1 className="orders-page-title">Order History</h1>
+          <p className="orders-page-subtitle">
+            Review your verified grocery shipments, payment status, and dispatch progress.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <Link to="/categories" className="btn btn-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-            <ShoppingBag size={16} />
-            Continue Shopping
+        <div className="orders-header-actions">
+          <Link to="/categories" className="btn btn-outline orders-head-btn">
+            <ShoppingBag size={15} />
+            Shop Groceries
           </Link>
-          <Link to="/track-order" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Truck size={16} />
+          <Link to="/track-order" className="btn btn-primary orders-head-btn">
+            <Truck size={15} />
             Track Order Live
           </Link>
         </div>
@@ -213,30 +224,16 @@ const OrderHistory = () => {
 
       {/* Guest Sync Banner if not logged in */}
       {!user && (
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '1rem',
-            background: 'rgba(212, 163, 115, 0.1)',
-            border: '1px solid rgba(212, 163, 115, 0.3)',
-            borderRadius: '14px',
-            padding: '1rem 1.25rem',
-            marginBottom: '1.5rem'
-          }}
-        >
+        <div className="orders-guest-banner">
           <div>
-            <strong style={{ color: 'var(--accent)', fontSize: '0.95rem' }}>Viewing Local Device Orders</strong>
-            <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-              Sign in with your Google account to automatically synchronize and view your order history across all devices.
+            <strong className="guest-banner-title">Viewing Local Device Orders</strong>
+            <p className="guest-banner-text">
+              Sign in with your Google account to automatically synchronize your verified orders across all mobile and desktop devices.
             </p>
           </div>
           <button
             type="button"
-            className="btn btn-outline"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}
+            className="btn btn-outline guest-signin-btn"
             onClick={loginWithGoogle}
           >
             <LogIn size={15} />
@@ -246,60 +243,46 @@ const OrderHistory = () => {
       )}
 
       {/* Search & Status Filters */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
-        <div style={{ flex: '1 1 240px', position: 'relative' }}>
-          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+      <div className="orders-filter-bar">
+        <div className="orders-search-input-wrap">
+          <Search size={16} className="orders-search-icon" />
           <input
             type="text"
             placeholder="Search by Order ID or Product Name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.65rem 1rem 0.65rem 2.25rem',
-              borderRadius: '10px',
-              border: '1px solid var(--border-color)',
-              background: 'var(--bg-secondary)',
-              color: 'var(--text-primary)'
-            }}
           />
         </div>
         <select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
           aria-label="Filter orders by status"
-          style={{
-            padding: '0.65rem 1rem',
-            borderRadius: '10px',
-            border: '1px solid var(--border-color)',
-            background: 'var(--bg-secondary)',
-            color: 'var(--text-primary)',
-            minWidth: '150px'
-          }}
+          className="orders-status-dropdown"
         >
           <option value="all">All statuses</option>
-          <option value="pending">Pending</option>
-          <option value="processing">Processing</option>
-          <option value="shipped">Shipped</option>
-          <option value="out for delivery">Out for Delivery</option>
+          <option value="order_placed">Order Placed</option>
+          <option value="confirmed">Payment Confirmed</option>
+          <option value="packed">Packed</option>
+          <option value="dispatched">Dispatched</option>
+          <option value="out_for_delivery">Out for Delivery</option>
           <option value="delivered">Delivered</option>
           <option value="cancelled">Cancelled</option>
         </select>
       </div>
 
       {isLoading ? (
-        <div className="card text-center" style={{ padding: '4rem 2rem', borderRadius: '16px' }}>
-          <div className="spinner" style={{ margin: '0 auto 1.5rem' }} />
+        <div className="card orders-loading-card">
+          <div className="spinner" style={{ margin: '0 auto 1.25rem' }} />
           <h3 className="heading-3 mb-2">Loading Orders...</h3>
-          <p className="text-muted">Fetching your verified order records from database.</p>
+          <p className="text-muted">Fetching verified orders from Dhanbad central repository.</p>
         </div>
       ) : filteredOrders.length === 0 ? (
-        <div className="card text-center" style={{ padding: '4rem 2rem', borderRadius: '16px' }}>
+        <div className="card orders-empty-card">
           <Package size={52} color="var(--accent)" style={{ margin: '0 auto 1.25rem', opacity: 0.8 }} />
           <h3 className="heading-3 mb-2">No Matching Orders Found</h3>
           <p className="text-muted mb-6" style={{ maxWidth: '440px', margin: '0 auto 1.5rem' }}>
             {orders.length === 0
-              ? 'You have not placed any orders on this device yet. Explore our everyday grocery, tea, and cooking oils to get started!'
+              ? 'You have not placed any orders on this device yet. Explore our fresh grocery items to get started!'
               : 'Try clearing your search query or choosing another status filter.'}
           </p>
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -315,84 +298,95 @@ const OrderHistory = () => {
         <div className="orders-list">
           {filteredOrders.map((order, index) => {
             const isExpanded = expandedOrderId === order.id;
-            const trackingSteps = getTrackingSteps(order.status);
             const deliveryMeta = getDeliveryMeta(order);
+            const canonical = normalizeOrderStatus(order.status);
+            const stepIndex = getOrderStepIndex(canonical);
 
             return (
-              <div key={order.id || index} className="card order-card" style={{ borderRadius: '16px' }}>
-                {/* Order Header */}
-                <div className="order-header">
+              <div key={order.id || index} className="order-card-modern">
+                {/* Header */}
+                <div className="order-card-top">
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                      <span className="order-id">#{order.id}</span>
+                    <div className="order-id-group">
+                      <strong className="order-id-text">#{order.id}</strong>
                       <button
                         type="button"
-                        className="btn btn-outline"
-                        style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', borderRadius: '999px', minHeight: 'unset' }}
-                        onClick={() => {
-                          navigator.clipboard.writeText(order.id);
-                        }}
+                        className="order-copy-pill"
+                        onClick={() => copyOrderRef(order.id)}
                         title="Copy Order ID"
                       >
-                        Copy
+                        <Copy size={11} />
+                        {copiedId === order.id ? 'Copied' : 'Copy'}
                       </button>
                     </div>
-                    <div className="flex items-center gap-2 mt-1 text-muted" style={{ fontSize: '0.85rem' }}>
-                      <Calendar size={14} />
+                    <div className="order-date-text">
+                      <Calendar size={13} />
                       <span>{new Date(order.date || Date.now()).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className={`order-status ${getOrderStatusClass(order.status)}`}>{order.status || 'Processing'}</div>
-                    <div className="order-total mt-1" style={{ color: 'var(--text-primary)', fontWeight: '800' }}>
+
+                  <div className="order-card-status-box">
+                    {getOrderStatusBadge(order.status)}
+                    <div className="order-amount-text">
                       ₹{Number(order.total || 0).toFixed(2)}
                     </div>
                   </div>
                 </div>
 
-                {/* Order Items Summary visually */}
-                <div className="order-items-preview">
-                  {(order.items || []).slice(0, 4).map((item, i) => (
-                    <div key={i} className="order-preview-img-wrapper" title={`${item.name} x${item.quantity}`}>
+                {/* Items Thumbnails Preview */}
+                <div className="order-thumbnails-row">
+                  {(order.items || []).slice(0, 5).map((item, i) => (
+                    <div key={i} className="order-thumb-wrap" title={`${item.name} x${item.quantity}`}>
                       <img
                         src={optimizeImageUrl(item.image || item.images, 120)}
                         alt={item.name}
-                        className="order-preview-img"
+                        className="order-thumb-img"
                         loading="lazy"
                         decoding="async"
                         onError={(e) => handleImageError(e, '/products/t1.jpg')}
                       />
-                      <span className="order-preview-qty">{item.quantity}</span>
+                      <span className="order-thumb-qty">{item.quantity}</span>
                     </div>
                   ))}
-                  {(order.items || []).length > 4 && (
-                    <div className="order-preview-more">
-                      +{(order.items || []).length - 4}
+                  {(order.items || []).length > 5 && (
+                    <div className="order-thumb-more">
+                      +{(order.items || []).length - 5}
                     </div>
                   )}
                 </div>
 
-                {/* Order Footer Actions */}
-                <div className="order-footer">
-                  <div className="flex items-center gap-2 text-muted" style={{ fontSize: '0.85rem' }}>
-                    <CreditCard size={15} />
+                {/* Card Footer Actions */}
+                <div className="order-card-bottom">
+                  <div className="order-pay-info">
+                    <CreditCard size={14} />
                     <span>{getPaymentMethodLabel(order.paymentMethod)}</span>
-                    <span>•</span>
-                    <span>{order.paymentStatus || 'Paid'}</span>
+                    <span className="dot-sep">•</span>
+                    <span className="order-pay-status-pill">{order.paymentVerificationStatus || order.paymentStatus || 'Verified'}</span>
                   </div>
-                  <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+
+                  <div className="order-action-buttons">
+                    <a
+                      href={`https://wa.me/917004634675?text=Hello%20Roshan%20Enterprises,%20I%20am%20inquiring%20about%20Order%20${encodeURIComponent(order.id)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="order-wa-icon-btn"
+                      title="WhatsApp Support for this Order"
+                    >
+                      <MessageSquare size={14} color="#22c55e" />
+                    </a>
+
                     <button
                       type="button"
-                      className="btn btn-outline"
-                      style={{ padding: '0.45rem 0.9rem', fontSize: '0.85rem' }}
+                      className="btn btn-outline order-toggle-btn"
                       onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
                     >
-                      {isExpanded ? 'Hide Details' : 'View Items'}
+                      {isExpanded ? 'Hide Items' : 'View Items'}
+                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                     </button>
+
                     <button
                       type="button"
-                      className="btn btn-primary"
-                      style={{ padding: '0.45rem 0.9rem', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+                      className="btn btn-primary order-track-btn"
                       onClick={() => navigate(`/track-order?id=${encodeURIComponent(order.id)}`)}
                     >
                       <Truck size={14} />
@@ -401,54 +395,51 @@ const OrderHistory = () => {
                   </div>
                 </div>
 
+                {/* Expanded Details Drawer */}
                 {isExpanded && (
-                  <div className="order-tracking">
-                    <div className="order-tracking__header">
-                      <h4>Shipment Timeline</h4>
-                      <span className="order-tracking__eta">
-                        <MapPinned size={14} /> Estimated delivery: {deliveryMeta.dateText} ({deliveryMeta.daysText})
-                      </span>
+                  <div className="order-expanded-drawer animate-fade-in">
+                    <div className="expanded-eta-bar">
+                      <Truck size={15} color="var(--accent)" />
+                      <span>Delivery Target: <strong>{deliveryMeta.dateText}</strong></span>
+                      {order.dispatchInfo?.courierName && (
+                        <span className="courier-tag">Via {order.dispatchInfo.courierName}</span>
+                      )}
                     </div>
 
-                    <div className="order-tracking__steps">
-                      {trackingSteps.map((step, stepIndex) => {
-                        const Icon = step.icon;
-                        return (
-                          <div key={step.label} className={`tracking-step ${step.done ? 'done' : ''}`}>
-                            <div className="tracking-step__icon"><Icon size={14} /></div>
-                            <span>{step.label}</span>
-                            {stepIndex < trackingSteps.length - 1 && <div className="tracking-step__line" />}
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    <div className="tracked-products">
+                    <div className="expanded-products-list">
                       {(order.items || []).map((item, productIndex) => (
-                        <div key={`${item.id}-${productIndex}`} className="tracked-product">
+                        <div key={`${item.id}-${productIndex}`} className="expanded-product-row">
                           <img
-                            src={optimizeImageUrl(item.image || item.images, 160)}
+                            src={optimizeImageUrl(item.image || item.images, 120)}
                             alt={item.name}
-                            className="tracked-product__img"
+                            className="expanded-product-img"
                             loading="lazy"
                             decoding="async"
                             onError={(e) => handleImageError(e, '/products/t1.jpg')}
                           />
-                          <div className="tracked-product__meta">
-                            <p className="tracked-product__name">{item.name}</p>
-                            <p className="tracked-product__qty">Qty: {item.quantity} • ₹{item.price} each</p>
+                          <div className="expanded-product-info">
+                            <p className="expanded-product-name">{item.name}</p>
+                            <span className="expanded-product-qty">
+                              Quantity: {item.quantity} × ₹{item.price}
+                            </span>
                           </div>
-                          <span className="tracked-product__status">₹{(item.price * item.quantity).toFixed(2)}</span>
+                          <span className="expanded-product-price">
+                            ₹{(item.price * item.quantity).toFixed(2)}
+                          </span>
                         </div>
                       ))}
                     </div>
 
                     {order.customer && (
-                      <div style={{ marginTop: '1rem', padding: '0.85rem', background: 'var(--bg-secondary)', borderRadius: '10px', fontSize: '0.85rem' }}>
-                        <strong>Delivery Address: </strong>
-                        <span className="text-muted">
-                          {order.customer.firstName} {order.customer.lastName}, {order.customer.shippingAddress} (Ph: {order.customer.contact})
-                        </span>
+                      <div className="expanded-address-box">
+                        <strong>Shipping Destination:</strong>
+                        <p>
+                          {order.customer.firstName} {order.customer.lastName}
+                          <br />
+                          {order.customer.shippingAddress}
+                          <br />
+                          Contact: <strong>+91 {order.customer.contact}</strong>
+                        </p>
                       </div>
                     )}
                   </div>

@@ -253,10 +253,14 @@ const App = () => {
     try {
       const ordersQuery = query(collection(db, 'orders'), orderBy('date', 'desc'));
       const snapshot = await getDocs(ordersQuery);
-      const rows = snapshot.docs.map((item) => ({
-        id: item.id,
-        ...item.data()
-      }));
+      const rows = snapshot.docs.map((item) => {
+        const d = item.data();
+        return {
+          ...d,
+          docId: item.id,
+          id: d.id || item.id
+        };
+      });
       setOrders(rows);
     } catch (loadError) {
       setError(loadError.message || 'Failed to load orders.');
@@ -265,25 +269,64 @@ const App = () => {
     }
   };
 
-  const updateOrderStatus = async (orderId, newStatus) => {
+  const updateOrderStatus = async (orderId, updates = {}) => {
     clearMessages();
 
+    const patch = typeof updates === 'string' ? { status: updates } : updates;
+    const targetOrder = orders.find((o) => o.id === orderId || o.docId === orderId);
+    const docKey = targetOrder?.docId || orderId;
+
     const previousOrders = [...orders];
-    setOrders((prev) => prev.map((item) => (
-      item.id === orderId
-        ? { ...item, status: newStatus, updatedAt: new Date().toISOString() }
-        : item
-    )));
+
+    // Construct updated timeline
+    let updatedTimeline = Array.isArray(targetOrder?.timeline) ? [...targetOrder.timeline] : [];
+    if (patch.status) {
+      updatedTimeline.push({
+        status: patch.status,
+        label: patch.label || patch.status,
+        timestamp: new Date().toISOString(),
+        description: patch.description || `Status updated to ${patch.status} by store administration.`,
+        location: patch.location || 'Roshan Enterprises Central Desk, Dhanbad'
+      });
+    }
+
+    const mergedDispatch = patch.dispatchInfo
+      ? { ...(targetOrder?.dispatchInfo || {}), ...patch.dispatchInfo }
+      : targetOrder?.dispatchInfo;
+
+    const firestoreUpdatePayload = {
+      updatedAt: new Date().toISOString(),
+      ...(patch.status ? { status: patch.status } : {}),
+      ...(patch.paymentVerificationStatus ? { paymentVerificationStatus: patch.paymentVerificationStatus } : {}),
+      ...(patch.paymentStatus ? { paymentStatus: patch.paymentStatus } : {}),
+      ...(mergedDispatch ? { dispatchInfo: mergedDispatch } : {}),
+      ...(updatedTimeline.length > 0 ? { timeline: updatedTimeline } : {})
+    };
+
+    setOrders((prev) =>
+      prev.map((item) =>
+        item.id === orderId || item.docId === orderId
+          ? { ...item, ...firestoreUpdatePayload }
+          : item
+      )
+    );
 
     try {
-      await updateDoc(doc(db, 'orders', orderId), {
-        status: newStatus,
-        updatedAt: new Date().toISOString()
-      });
-      setStatus(`Order status updated to "${newStatus}".`);
+      try {
+        await updateDoc(doc(db, 'orders', docKey), firestoreUpdatePayload);
+      } catch (directErr) {
+        const q = query(collection(db, 'orders'), where('id', '==', orderId));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          await updateDoc(doc(db, 'orders', snap.docs[0].id), firestoreUpdatePayload);
+        } else {
+          throw directErr;
+        }
+      }
+      setStatus(`Order #${orderId} updated successfully.`);
     } catch (updateError) {
       setOrders(previousOrders);
-      setError(updateError.message || 'Failed to update order status.');
+      setError(updateError.message || 'Failed to update order.');
     }
   };
 
