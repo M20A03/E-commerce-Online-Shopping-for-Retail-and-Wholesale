@@ -452,7 +452,7 @@ export default function Home() {
           {visibleCarouselProducts.map((product) => (
             <Link key={product.id} to={`/categories?cat=${product.category || 'all'}`} className="dhv2-product-slide">
               <img
-                src={optimizeImageUrl(product.image, 320)}
+                src={optimizeImageUrl(product.image || product.images, 320)}
                 alt={product.name}
                 loading="lazy"
                 decoding="async"
@@ -497,7 +497,7 @@ export default function Home() {
             {recentlyViewedProducts.map((product) => (
               <Link key={product.id} to={`/categories?cat=${product.category || 'all'}`} className="dhv2-product-slide">
                 <img
-                  src={optimizeImageUrl(product.image, 320)}
+                  src={optimizeImageUrl(product.image || product.images, 320)}
                   alt={product.name}
                   loading="lazy"
                   decoding="async"

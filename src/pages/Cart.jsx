@@ -60,7 +60,7 @@ const Cart = () => {
                   <div key={item.id} className="cart-item">
                     <div className="col-product flex gap-3 items-center">
                       <img
-                        src={optimizeImageUrl(item.image, 160)}
+                        src={optimizeImageUrl(item.image || item.images, 160)}
                         alt={item.name}
                         className="cart-item-img"
                         loading="lazy"

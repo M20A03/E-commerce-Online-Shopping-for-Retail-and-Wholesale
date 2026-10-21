@@ -393,7 +393,7 @@ const Checkout = () => {
               {cart.map((item) => (
                 <div key={item.id} className="summary-item">
                   <img
-                    src={optimizeImageUrl(item.image, 160)}
+                    src={optimizeImageUrl(item.image || item.images, 160)}
                     alt={item.name}
                     className="summary-item-img"
                     loading="lazy"

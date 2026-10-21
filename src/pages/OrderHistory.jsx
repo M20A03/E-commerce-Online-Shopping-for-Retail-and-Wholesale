@@ -355,7 +355,7 @@ const OrderHistory = () => {
                   {(order.items || []).slice(0, 4).map((item, i) => (
                     <div key={i} className="order-preview-img-wrapper" title={`${item.name} x${item.quantity}`}>
                       <img
-                        src={optimizeImageUrl(item.image, 120)}
+                        src={optimizeImageUrl(item.image || item.images, 120)}
                         alt={item.name}
                         className="order-preview-img"
                         loading="lazy"
@@ -427,7 +427,7 @@ const OrderHistory = () => {
                       {(order.items || []).map((item, productIndex) => (
                         <div key={`${item.id}-${productIndex}`} className="tracked-product">
                           <img
-                            src={optimizeImageUrl(item.image, 160)}
+                            src={optimizeImageUrl(item.image || item.images, 160)}
                             alt={item.name}
                             className="tracked-product__img"
                             loading="lazy"

@@ -63,3 +63,36 @@
   color: var(--accent);
   margin-top: 2px;
 }
+
+@media (max-width: 560px) {
+  .roshan-logo {
+    gap: 0.5rem;
+  }
+  .roshan-logo__symbol {
+    width: 34px;
+    height: 34px;
+  }
+  .roshan-logo__title {
+    font-size: 1.15rem;
+  }
+  .roshan-logo__subtitle {
+    font-size: 0.52rem;
+    letter-spacing: 0.16em;
+  }
+}
+
+@media (max-width: 380px) {
+  .roshan-logo {
+    gap: 0.35rem;
+  }
+  .roshan-logo__symbol {
+    width: 30px;
+    height: 30px;
+  }
+  .roshan-logo__title {
+    font-size: 1.05rem;
+  }
+  .roshan-logo__subtitle {
+    display: none;
+  }
+}

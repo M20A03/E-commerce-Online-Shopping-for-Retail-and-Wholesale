@@ -77,7 +77,7 @@ function ProductCard({ product, delay = 0, onQuickView }) {
           <span className={`product-label ${product.badgeType || 'sale'}`}>{product.badge}</span>
         )}
         <img
-          src={optimizeImageUrl(product.image, 380)}
+          src={optimizeImageUrl(product.image || product.images, 380)}
           alt={product.name}
           loading="lazy"
           decoding="async"

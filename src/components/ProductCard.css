@@ -16,6 +16,8 @@
   touch-action: manipulation;
   transform-style: preserve-3d;
   perspective: 1000px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media (hover: hover) {

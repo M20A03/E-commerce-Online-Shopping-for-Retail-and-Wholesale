@@ -30,6 +30,7 @@ const Account = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
     const [authState, setAuthState] = useState({ loading: false, text: '', type: '' });
+    const [avatarError, setAvatarError] = useState(false);
 
     const formData = {
         firstName: formOverrides.firstName ?? user?.firstName ?? derivedName.firstName ?? '',
@@ -140,14 +141,14 @@ const Account = () => {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                 {/* Sidebar */}
                 <div className="md:col-span-4 lg:col-span-3">
-                    <div className="card" style={{ padding: '2rem', height: 'fit-content' }}>
+                    <div className="card account-sidebar-card" style={{ height: 'fit-content' }}>
                         <div className="flex-col items-center justify-center text-center mb-6">
-                            {user?.photoURL ? (
+                            {user?.photoURL && !avatarError ? (
                                 <img
                                     src={user.photoURL}
                                     alt={profileTitle}
                                     referrerPolicy="no-referrer"
-                                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                    onError={() => setAvatarError(true)}
                                     style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', marginBottom: '1rem', border: '2px solid var(--border-color)' }}
                                 />
                             ) : (

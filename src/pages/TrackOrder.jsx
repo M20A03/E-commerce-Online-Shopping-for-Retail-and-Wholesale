@@ -363,7 +363,7 @@ const TrackOrder = () => {
                         }}
                       >
                         <img
-                          src={optimizeImageUrl(item.image, 100)}
+                          src={optimizeImageUrl(item.image || item.images, 100)}
                           alt={item.name}
                           style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '8px' }}
                           onError={(e) => handleImageError(e, '/products/t1.jpg')}

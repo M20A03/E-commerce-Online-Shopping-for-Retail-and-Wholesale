@@ -185,3 +185,13 @@
     min-width: 0;
   }
 }
+
+.account-sidebar-card {
+  padding: 2rem;
+}
+
+@media (max-width: 640px) {
+  .account-sidebar-card {
+    padding: 1.25rem;
+  }
+}

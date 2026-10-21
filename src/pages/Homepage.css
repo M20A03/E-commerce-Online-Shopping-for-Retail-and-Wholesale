@@ -68,6 +68,13 @@
   grid-template-columns: 1fr;
   gap: var(--space-8);
   align-items: center;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.dhv2-copy, .dhv2-signal {
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media (min-width: 900px) {
@@ -502,6 +509,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-4);
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media (max-width: 480px) {
@@ -541,6 +550,8 @@
   flex-direction: column;
   box-shadow: var(--shadow-xs);
   transition: all var(--transition-fast);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .dhv2-product-slide:hover {

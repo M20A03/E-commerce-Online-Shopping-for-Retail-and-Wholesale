@@ -75,7 +75,7 @@ export function ProductModal({ product, isOpen, onClose }) {
               {/* Product Image Column */}
               <div className="product-modal-media">
                 <img
-                  src={optimizeImageUrl(product.image, 600)}
+                  src={optimizeImageUrl(product.image || product.images, 600)}
                   alt={product.name}
                   className="product-modal-image"
                   loading="lazy"

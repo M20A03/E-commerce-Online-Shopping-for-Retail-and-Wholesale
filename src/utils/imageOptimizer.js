@@ -31,14 +31,46 @@ export const FALLBACK_PRODUCT_IMAGE =
   `);
 
 /**
+ * Helper to safely extract the primary image URL from a product entity
+ * (supports legacy `image` string or updated `images` array)
+ *
+ * @param {object|string|array} product - Product entity, image URL string, or images array
+ * @returns {string} - Extracted primary image string
+ */
+export function getProductImageUrl(product) {
+  if (!product) return '';
+  if (typeof product === 'string') return product.trim();
+  if (Array.isArray(product) && product.length > 0) {
+    return typeof product[0] === 'string' ? product[0].trim() : '';
+  }
+  if (typeof product === 'object') {
+    if (Array.isArray(product.images) && product.images.length > 0 && typeof product.images[0] === 'string') {
+      return product.images[0].trim();
+    }
+    if (typeof product.image === 'string' && product.image.trim()) {
+      return product.image.trim();
+    }
+    if (Array.isArray(product.image) && product.image.length > 0) {
+      return typeof product.image[0] === 'string' ? product.image[0].trim() : '';
+    }
+    if (product.url && typeof product.url === 'string') {
+      return product.url.trim();
+    }
+  }
+  return '';
+}
+
+/**
  * Optimizes an image URL for high performance.
  * For Cloudinary URLs, injects automatic format (AVIF/WebP), optimal quality compression, and dimensional bounds.
  *
- * @param {string} url - Original image URL
+ * @param {string|array|object} input - Original image URL or product object/array
  * @param {number} [width=500] - Target rendering width
  * @returns {string} - High-efficiency optimized image URL
  */
-export function optimizeImageUrl(url, width = 500) {
+export function optimizeImageUrl(input, width = 500) {
+  const url = typeof input === 'string' ? input : getProductImageUrl(input);
+
   if (!url || typeof url !== 'string') {
     return FALLBACK_PRODUCT_IMAGE;
   }
@@ -77,19 +109,28 @@ export function optimizeImageUrl(url, width = 500) {
  */
 export function handleImageError(event, secondaryFallback) {
   const target = event.currentTarget;
-  const currentSrc = target.src || '';
+  if (!target) return;
 
-  // If webp failed, retry with jpeg first
-  if (currentSrc.endsWith('.webp')) {
-    target.src = currentSrc.replace(/\.webp$/, '.jpg');
-    return;
+  const retries = Number(target.getAttribute('data-img-retries') || '0');
+
+  if (retries === 0) {
+    target.setAttribute('data-img-retries', '1');
+    const currentSrc = target.src || '';
+
+    // If webp failed, retry with jpeg first
+    if (currentSrc.includes('.webp')) {
+      target.src = currentSrc.replace(/\.webp($|\?)/, '.jpg$1');
+      return;
+    }
+
+    // Try secondary fallback if available and not already attempted
+    if (secondaryFallback && !currentSrc.includes(secondaryFallback)) {
+      target.src = secondaryFallback;
+      return;
+    }
   }
 
-  target.onerror = null; // Prevent recursion
-
-  if (secondaryFallback && currentSrc !== secondaryFallback) {
-    target.src = secondaryFallback;
-  } else {
-    target.src = FALLBACK_PRODUCT_IMAGE;
-  }
+  // Final fallback: Inline high-resolution SVG placeholder
+  target.onerror = null;
+  target.src = FALLBACK_PRODUCT_IMAGE;
 }

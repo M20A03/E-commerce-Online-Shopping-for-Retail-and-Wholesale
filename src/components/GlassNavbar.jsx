@@ -68,6 +68,7 @@ const GlassNavbar = ({ theme, toggleTheme, onCartClick, cartButtonRef }) => {
   const [authOpen, setAuthOpen] = useState(false);
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
 
   const cartCount = getCartCount();
   const currentDomain = typeof window !== 'undefined' ? window.location.host : '';
@@ -86,6 +87,10 @@ const GlassNavbar = ({ theme, toggleTheme, onCartClick, cartButtonRef }) => {
     setMobileOpen(false);
     setAuthOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    setAvatarError(false);
+  }, [user?.photoURL]);
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -153,7 +158,7 @@ const GlassNavbar = ({ theme, toggleTheme, onCartClick, cartButtonRef }) => {
 
           <div className="glass-navbar__actions">
             <MagneticButton
-              className="glass-button--soft glass-navbar__icon-button"
+              className="glass-button--soft glass-navbar__icon-button glass-navbar__theme-btn"
               ariaLabel="Toggle theme"
               onClick={toggleTheme}
             >
@@ -182,17 +187,23 @@ const GlassNavbar = ({ theme, toggleTheme, onCartClick, cartButtonRef }) => {
             {user ? (
               <>
                 <div className="glass-navbar__auth-panel">
-                  <button type="button" className="glass-button glass-button--soft" onClick={() => navigate('/account')}>
-                    {user.photoURL ? (
+                  <button
+                    type="button"
+                    className="glass-button glass-button--soft glass-navbar__auth-button"
+                    onClick={() => navigate('/account')}
+                    aria-label="My Account"
+                    title={user.displayName || user.email || 'My Account'}
+                  >
+                    {user.photoURL && !avatarError ? (
                       <img
                         src={user.photoURL}
                         alt={user.displayName || 'User'}
                         className="glass-navbar__avatar-img"
                         referrerPolicy="no-referrer"
-                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        onError={() => setAvatarError(true)}
                       />
                     ) : (
-                      <span className="glass-navbar__avatar"><User size={16} /></span>
+                      <span className="glass-navbar__avatar"><User size={18} /></span>
                     )}
                     <span className="glass-navbar__user-copy">
                       <span className="glass-navbar__user-label">Signed in as</span>
@@ -201,7 +212,7 @@ const GlassNavbar = ({ theme, toggleTheme, onCartClick, cartButtonRef }) => {
                   </button>
                 </div>
                 <MagneticButton
-                  className="glass-button--ghost glass-navbar__icon-button"
+                  className="glass-button--ghost glass-navbar__icon-button glass-navbar__desktop-logout"
                   ariaLabel="Logout"
                   onClick={handleLogout}
                 >
